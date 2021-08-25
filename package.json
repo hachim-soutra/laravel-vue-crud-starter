@@ -1,0 +1,45 @@
+{
+    "private": true,
+    "scripts": {
+        "dev": "npm run development",
+        "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --config=node_modules/laravel-mix/setup/webpack.config.js",
+        "watch": "npm run development -- --watch",
+        "watch-poll": "npm run watch -- --watch-poll",
+        "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --disable-host-check --config=node_modules/laravel-mix/setup/webpack.config.js",
+        "prod": "npm run production",
+        "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --config=node_modules/laravel-mix/setup/webpack.config.js"
+    },
+    "devDependencies": {
+        "autoprefixer": "^10.2.3",
+        "axios": "^0.19",
+        "bootstrap": "^4.5.3",
+        "cross-env": "^5.1",
+        "jquery": "^3.5.1",
+        "laravel-mix": "^5.0.7",
+        "lodash": "^4.17.20",
+        "popper.js": "^1.12",
+        "postcss": "^8.2.4",
+        "resolve-url-loader": "^2.3.1",
+        "sass": "^1.27.0",
+        "sass-loader": "7.*",
+        "tailwindcss": "^2.0.2",
+        "vue": "^2.6.12",
+        "vue-template-compiler": "^2.6.12"
+    },
+    "dependencies": {
+        "@fortawesome/fontawesome-free": "^5.15.1",
+        "@johmun/vue-tags-input": "^2.1.0",
+        "admin-lte": "^3.0.5",
+        "chart.js": "^2.9.4",
+        "laravel-vue-pagination": "^2.3.1",
+        "moment": "^2.29.1",
+        "sweetalert2": "^9.17.2",
+        "vform": "^1.0.1",
+        "vue-chartjs": "^3.5.1",
+        "vue-material": "^1.0.0-beta-15",
+        "vue-progressbar": "^0.7.5",
+        "vue-router": "^3.4.7",
+        "vuejs-datepicker": "^1.6.2",
+        "vuetify": "^2.4.5"
+    }
+}

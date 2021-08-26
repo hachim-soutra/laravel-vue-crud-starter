@@ -98,9 +98,10 @@ Route::namespace('App\\Http\\Controllers\\API\V1')->middleware(['cors','auth:api
 
     Route::get('consumers/list', 'ConsumerController@list');
     Route::get('products/list', 'ProductController@list');
-    Route::get('permissions/list/{id}', 'permissionController@indexByRole');
+    Route::get('permissions/list/{id}', 'PermissionController@indexByRole');
 
     Route::get('order-delivred/{shipping_id}', 'OrderController@getDelivryOrder');
+    Route::post('order/import', 'OrderController@import');
 
     Route::apiResources([
         'user'      => 'UserController',

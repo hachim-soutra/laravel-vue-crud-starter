@@ -10,6 +10,8 @@ use App\Notifications\newOrder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
+use App\Imports\OrderImport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class OrderController extends BaseController
 {
@@ -29,9 +31,9 @@ class OrderController extends BaseController
     {
 
         $orders = $this->order->allOrder();
-        if(auth()->user()->role_id !== 1){
-            $orders = $orders->where('user_id',auth()->user()->id)->get();
-        }
+        // $row[6]if(auth()->user()->role_id !== 1){
+        //    $orders = $orders->where('user_id',auth()->user()->id)->get();
+        // }
 
         return $this->sendResponse($orders, 'order list');
     }
@@ -39,6 +41,13 @@ class OrderController extends BaseController
     {
         $orders = $this->order->delivryOrder($shipping_id);
         return $this->sendResponse($orders, 'order list');
+    }
+
+    public function import(Request $request)
+    {
+        Excel::import(new OrderImport, $request->file('file'));
+        return $this->sendResponse(array(), 'All good!');
+
     }
     /**
      * Store a newly created resource in storage.

@@ -37,9 +37,7 @@ class OrderController extends BaseController
     public function refresh()
     {
         if(auth()->user()->orderValide){
-            return response([
-                'message' => 'alreday exists'
-            ],500);
+            return $this->sendResponse(new OrderResource(auth()->user()->orderValide), 'order list');
         }
         $order = $this->order->where('order_status_id',1)->whereNull('gestion_id')->first();
         $order->gestion_id =  auth()->user()->id;

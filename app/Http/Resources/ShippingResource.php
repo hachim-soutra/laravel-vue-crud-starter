@@ -14,6 +14,13 @@ class ShippingResource extends JsonResource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+            'id'         => $this->id,
+            'name'       => $this->name,
+            'price'      => $this->price,
+            'status'      => $this->status,
+            'country'       => $this->country->name,
+            'created_at' => $this->created_at->format('Y-m-d'),
+        ];
     }
 }

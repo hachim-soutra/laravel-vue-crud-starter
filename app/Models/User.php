@@ -25,7 +25,7 @@ class User extends Authenticatable // implements MustVerifyEmail
 
     /**
      * The attributes that should be hidden for arrays.
-     *
+     *com
      * @var array
      */
     protected $hidden = [

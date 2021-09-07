@@ -12,7 +12,7 @@ class Order extends Model
     use HasFactory, Notifiable;
 
     protected $fillable = [
-        'status', 'tarif', 'package', 'source_id', 'consumer_id', 'product_id', 'upsell_json', 'note_json', 'shipping_id', 'shipping_json', 'quantity', 'total', 'subTotal', 'dateConfirmation', 'city', 'user_id'
+        'order_status_id', 'tarif', 'package', 'source_id', 'consumer_id', 'product_id', 'upsell_json', 'note_json', 'shipping_id', 'shipping_json', 'quantity', 'total', 'subTotal', 'dateConfirmation', 'city', 'city_id', 'user_id', 'gestion_id','shipping_adresse','contact_id'
     ];
 
     protected $appends = array('consumer_name', 'product_name');
@@ -31,15 +31,30 @@ class Order extends Model
     {
         return $this->belongsTo(Consumer::class);
     }
+    public function gestion()
+    {
+        return $this->belongsTo(Gestion::class, 'gestion_id');
+    }
+    public function contact()
+    {
+        return $this->belongsTo(Contact::class);
+    }
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+    public function status()
+    {
+        return $this->belongsTo(OrderStatus::class,'order_status_id');
     }
     public function getNoteAttribute()
     {
         return json_decode($this->note_json, true);
     }
-
+    public function country()
+    {
+        return $this->belongsTo(City::class,'city_id');
+    }
     public function product()
     {
         return $this->belongsTo(Product::class);
@@ -80,6 +95,7 @@ class Order extends Model
                 \App\QueryFilters\Status::class,
             ])
             ->thenReturn()
+            ->latest()
             ->get();
         return $posts;
     }

@@ -31,13 +31,13 @@ class ShippingCompanyController extends BaseController
     {
         $shippings = $this->shipping->where("type", "!=", "men")->get();
 
-        return $this->sendResponse($shippings, 'shipping list');
+        return $this->sendResponse($shippings, 'shipping list 11');
     }
     public function list()
     {
         $shippings = shipping::all();
 
-        return $this->sendResponse($shippings, 'shipping list');
+        return $this->sendResponse($shippings, 'shipping list 222');
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\API\V1\BaseController;
+use App\Http\Resources\OrderCollection;
 use App\Http\Resources\OrderResource;
 use App\Models\Consumer;
 use App\Models\Order;
@@ -11,6 +12,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 use App\Imports\OrderImport;
+use App\Models\Product;
+use App\Models\Shipping;
 use Maatwebsite\Excel\Facades\Excel;
 
 class OrderController extends BaseController
@@ -27,25 +30,37 @@ class OrderController extends BaseController
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($status = null)
     {
-
         $orders = $this->order->allOrder();
-        // $row[6]if(auth()->user()->role_id !== 1){
-        //    $orders = $orders->where('user_id',auth()->user()->id)->get();
-        // }
-
-        return $this->sendResponse($orders, 'order list');
+        if($status){
+            $orders = $orders->where('order_status_id',$status)->whereNull('shipping_id');
+        }
+        return $this->sendResponse(new OrderCollection($orders), 'order list');
     }
     public function getDelivryOrder($shipping_id)
     {
         $orders = $this->order->delivryOrder($shipping_id);
-        return $this->sendResponse($orders, 'order list');
+        return $this->sendResponse(new OrderCollection($orders), 'order list');
+    }
+    public function rammasage(Shipping $shipping, Request $request)
+    {
+        foreach ($request->orders as $order) {
+            $item = Order::find($order["id"]);
+            $item->shipping_id = $shipping->id;
+            foreach ($order["product_array"] as $produit) {
+                $product = Product::find($produit["id"]);
+                $product->quantity -= $produit["quantity"];
+                $product->save();
+            }
+            $item->save();
+        }
+        return $this->sendResponse($shipping, 'order list');
     }
 
     public function import(Request $request)
     {
-        Excel::import(new OrderImport, $request->file('file'));
+        Excel::import(new OrderImport($request->country_id, $request->contact_id), $request->file('file'));
         return $this->sendResponse(array(), 'All good!');
 
     }
@@ -93,19 +108,17 @@ class OrderController extends BaseController
 
         $order = $this->order->create([
             'quantity'      => $product_json->count(),
-            'status'        => $request->get('order_status'),
-            'package'       => $request->package_status,
-            'source_id'     => $request->source_id,
+            'order_status_id'        => $request->get('status'),
             'consumer_id'   => $user->id,
+            'contact_id'   => $request->contact_id,
             'product_id'    => 1,
-            'datetime'      => $request->datetime,
             'upsell_json'   => $product_json,
             'note_json'     => $note_json,
             'shipping_id'   => $request->get('shipping_id'),
             'shipping_json' => $shipping_json,
             'total'         => $request->get('total'),
             'subTotal'      => $request->get('subTotal'),
-            'dateConfirmation' => $request->dateConfirmation
+            'shipping_adresse' => $request->shipping_adresse
         ]);
 
 
@@ -151,7 +164,17 @@ class OrderController extends BaseController
         ]);
 
         $product_json = collect();
-
+        foreach ($request->rows as $produit) {
+            $product_json->push([
+                "id"          => $produit['id'],
+                "active"      => $produit['active'] ? 1 : 0,
+                "product"     => $produit['product'],
+                "product_name"  => DB::table('products')->where('id', $produit['product'])->first()->name,
+                "unit_cost"   => $produit['unit_cost'],
+                "quantity"    => $produit['quantity'],
+                "sub_total"   => $produit['sub_total']
+            ]);
+        };
 
         $user = Consumer::firstOrNew([
             'prenom' =>  request('consumer.prenom'),
@@ -163,9 +186,9 @@ class OrderController extends BaseController
         $user->save();
         $order->update([
             'quantity'      => $product_json->count(),
-            'status'        => $request->order_status,
+            'order_status_id'        => $request->order_status,
             'package'       => $request->package_status,
-            'source_id'     => $request->source_id,
+            'contact_id'     => $request->contact_id,
             'consumer_id'   => $request->consumer_id,
             'product_id'    => 1,
             'datetime'      => $request->datetime,
@@ -175,7 +198,20 @@ class OrderController extends BaseController
             'shipping_json' => $shipping_json,
             'total'         => $request->get('total'),
             'subTotal'      => $request->get('subTotal'),
-            'dateConfirmation' => $request->dateConfirmation
+            'shipping_adresse' => $request->shipping_adresse
+        ]);
+        return $this->sendResponse($order, 'order Information has been updated');
+    }
+    public function updateStatus(Request $request, $id)
+    {
+        $request->validate([
+            'order_status_id' => 'required|exists:order_statuses,id'
+        ]);
+        $order = $this->order->findOrFail($id);
+        $order->update([
+            'order_status_id' => $request->order_status_id,
+            'user_id'         => auth()->user()->id,
+
         ]);
         return $this->sendResponse($order, 'order Information has been updated');
     }

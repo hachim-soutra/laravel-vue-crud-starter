@@ -17,7 +17,7 @@ class Consumer extends Model
      * @var array
      */
     protected $fillable = [
-        'prenom', 'nom', 'phone', 'ville', 'status', 'adresse'
+        'prenom', 'nom', 'phone', 'ville', 'status', 'adresse',
     ];
 
     protected $appends = ['order', 'photo', 'username'];
@@ -30,7 +30,10 @@ class Consumer extends Model
     {
         return $this->nom . " " . $this->prenom;
     }
-
+    public function country()
+    {
+        return $this->belongsTo(City::class,'city_id');
+    }
     public function getOrderAttribute()
     {
         $orders = DB::table('orders')->where('consumer_id', $this->id)->sum('quantity');

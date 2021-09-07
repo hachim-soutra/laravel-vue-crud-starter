@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\V1;
 
 use App\Http\Requests\Products\ProductRequest;
 use App\Http\Resources\ProductResource;
+use App\Models\Contact;
 use App\Models\Product;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -44,6 +45,12 @@ class ProductController extends BaseController
         return $this->sendResponse($products, 'Product list');
     }
     public function list()
+    {
+        $products = $this->product->latest()->get();
+
+        return $this->sendResponse($products, 'Product list');
+    }
+    public function stock(Contact $contact)
     {
         $products = $this->product->latest()->get();
 

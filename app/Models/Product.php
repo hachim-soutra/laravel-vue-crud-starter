@@ -16,10 +16,9 @@ class Product extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'description', 'price', 'photo', 'sell', 'quantity', 'offre_json','user_id'
+        'name', 'description', 'price', 'photo', 'sell', 'quantity', 'offre_json','user_id','city_id'
     ];
-    protected $appends = ['offres'];
-
+    protected $appends = ['offres','quantityReste'];
 
     public function orders()
     {
@@ -36,5 +35,17 @@ class Product extends Model
     public function getOffresAttribute()
     {
         return json_decode($this->offre_json, true);
+    }
+    public function getQuantityResteAttribute()
+    {
+        return $this->quantity - $this->stocks->sum('quantity');
+    }
+    public function country()
+    {
+        return $this->belongsTo(City::class,'city_id');
+    }
+    public function stocks()
+    {
+        return $this->hasMany(Stock::class);
     }
 }

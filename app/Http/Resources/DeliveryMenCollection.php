@@ -14,7 +14,6 @@ class DeliveryMenCollection extends ResourceCollection
      */
     public function toArray($request)
     {
-        // return new DeliveryMenResource($this->collection);
         return DeliveryMenResource::collection($this->collection);
     }
 }

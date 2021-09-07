@@ -16,13 +16,21 @@ class Shipping extends Authenticatable
     use HasFactory, Notifiable, HasApiTokens;
 
     protected $fillable = [
-        'name', 'price', 'dure', 'type', 'status', 'tarif', 'phone', 'email', 'password', 'city'
+        'name', 'price', 'dure', 'status', 'tarif', 'phone', 'email', 'password', 'city', 'city_id'
     ];
 
     protected $hidden = [
         'password', 'remember_token',
     ];
 
+    public function user()
+    {
+        return $this->belongsTo(User::class,'user_id');
+    }
+    public function country()
+    {
+        return $this->belongsTo(City::class,'city_id');
+    }
     public function orders()
     {
         return $this->hasMany(Order::class);
@@ -30,29 +38,28 @@ class Shipping extends Authenticatable
 
     public function getOrderAnnulerAttribute()
     {
-        return $this->orders->where('status', 'CANCELED')->count();
+        return $this->orders->where('order_status_id', 7)->count();
     }
     public function getOrderLivreAttribute()
     {
-        return $this->orders->where('status', 'CLOSED')->count();
+        return $this->orders->where('order_status_id', 6)->count();
     }
     public function getCreditAttribute()
     {
-        $order = $this->orders->where('status', 'PAID')->sum('total');
-        $order_tarif = $this->orders->where('status', 'PAID')->sum('tarif');
-        $tarif = $this->orders->where('status', 'PAID')->count();
-        return $order - ($tarif * $this->price) - $order_tarif;
+        $order          = $this->orders->where('order_status_id', 6)->count() * $this->price;
+        $order_tarif    = $this->orders->where('order_status_id', 6)->sum('tarif');
+        return $order + $order_tarif;
     }
     public function getOrderPayeAttribute()
     {
-        return $this->orders->where('status', 'PAID')->count();
+        return $this->orders->where('order_status_id',5)->count();
     }
     public function getOrderReportieAttribute()
     {
-        return $this->orders->where('status', 'PROCESSED')->count();
+        return $this->orders->where('order_status_id', 3)->count();
     }
     public function getOrderPasReponseAttribute()
     {
-        return $this->orders->where('status', 'NO ANSWER')->count();
+        return $this->orders->where('order_status_id', 2)->count();
     }
 }

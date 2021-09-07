@@ -14,6 +14,6 @@ class ShippingCollection extends ResourceCollection
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        return ShippingResource::collection($this->collection);
     }
 }

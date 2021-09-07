@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Gestion;
+
 return [
 
     /*
@@ -44,6 +46,11 @@ return [
             'driver' => 'session',
             'provider' => 'shippings',
         ],
+        'gestion' => [
+            'driver' => 'session',
+            'provider' => 'gestions',
+        ],
+
 
         'api' => [
             'driver' => 'passport',
@@ -53,6 +60,11 @@ return [
         'shipping-api' => [
             'driver' => 'passport',
             'provider' => 'shippings',
+            'hash' => false,
+        ],
+        'gestion-api' => [
+            'driver' => 'passport',
+            'provider' => 'gestions',
             'hash' => false,
         ],
     ],
@@ -82,6 +94,10 @@ return [
         'shippings' => [
             'driver' => 'eloquent',
             'model' => App\Models\Shipping::class,
+        ],
+        'gestions' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Gestion::class,
         ],
 
         // 'users' => [
@@ -114,6 +130,12 @@ return [
         ],
         'shippings' => [
             'provider' => 'shippings',
+            'table' => 'password_resets',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+        'gestions' => [
+            'provider' => 'gestions',
             'table' => 'password_resets',
             'expire' => 60,
             'throttle' => 60,

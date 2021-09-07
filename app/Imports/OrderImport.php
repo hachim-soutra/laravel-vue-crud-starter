@@ -4,7 +4,9 @@ namespace App\Imports;
 
 use App\Models\Consumer;
 use App\Models\Order;
+use App\Models\OrderStatus;
 use App\Models\Product;
+use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\WithStartRow;
@@ -13,6 +15,13 @@ use Maatwebsite\Excel\Concerns\ToCollection;
 
 class OrderImport implements WithStartRow , ToCollection
 {
+    protected $id;
+    protected $contact_id;
+
+    function __construct($id, $contact_id) {
+        $this->id = $id;
+        $this->contact_id = $contact_id;
+    }
     public function startRow(): int
     {
         return 2;
@@ -28,7 +37,6 @@ class OrderImport implements WithStartRow , ToCollection
             if(isset($row[1]) && isset($row[1])){
 
         $name   = explode(" ",$row[1],2);
-        info($row);
         $prenom = $name[0];
         $nom    = $name[1];
 
@@ -43,34 +51,39 @@ class OrderImport implements WithStartRow , ToCollection
         $user->save();
 
         $note_json = collect([
-            "note"          => $row[9],
-            "delivery_note" => "",
+            "note"               => $row[8],
+            "delivery_note"      => "",
             "sell_shipping_cost" => ""
         ]);
-        $produit = Product::find($row[5]);
+        $produit = Product::whereName($row[5])->first();
         $product_json = collect();
 
         $product_json->push([
-            "id"          => $produit->id,
-            "active"      => 0,
-            "product"     => $produit->name,
-            "product_name" => $produit->name,
-            "unit_cost"   => $row[6],
-            "quantity"    => $row[7],
-            "sub_total"   => $row[8]
+            "id"            => $produit->id,
+            "active"        => 0,
+            "product"       => $produit->name,
+            "product_name"  => $produit->name,
+            "unit_cost"     => $row[6],
+            "quantity"      => $row[7],
+            "sub_total"     => $row[7] * $row[6]
         ]);
 
         $order = Order::create([
-            'status' => $row[10],
-            'consumer_id' => $user->id,
-            'product_id' => $row[5],
-            'note_json' =>  $note_json,
-            'quantity' => $row[7],
-            'upsell_json'   => $product_json,
-            'total'  => $row[8],
-            'subTotal' => $row[8],
-            'city_id' => $row[4]
+            'order_status_id'       => 1,
+            'consumer_id'           => $user->id,
+            'contact_id'            => $this->contact_id,
+            'product_id'            => $produit->id,
+            'note_json'             => $note_json,
+            'quantity'              => $row[7],
+            'upsell_json'           => $product_json,
+            'total'                 =>  $row[7] * $row[6],
+            'subTotal'              =>  $row[7] * $row[6],
+            'shipping_adresse'      => $row[3].", ". $row[4],
+            'city_id'               => $this->id,
+
         ]);
+        $order->created_at = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[0])->format('Y-m-d');
+        $order->save(['timestamps' => false]);
     }
     }
 }

@@ -98,24 +98,33 @@ Route::namespace('App\\Http\\Controllers\\API\V1')->middleware(['cors','auth:api
 
     Route::get('consumers/list', 'ConsumerController@list');
     Route::get('products/list', 'ProductController@list');
+    Route::get('products/list/contact/{contact:id}', 'ProductController@stock');
     Route::get('permissions/list/{id}', 'PermissionController@indexByRole');
 
     Route::get('order-delivred/{shipping_id}', 'OrderController@getDelivryOrder');
     Route::post('order/import', 'OrderController@import');
+    Route::put('order/status/{id}', 'OrderController@updateStatus');
+    Route::get('order/status/{status}', 'OrderController@index');
+    Route::post('/order/rammasage/{shipping:id}', 'OrderController@rammasage');
+    Route::get('stock-contact/{contact:id}', 'ContactController@getStock');
 
     Route::apiResources([
-        'user'      => 'UserController',
-        'role'      => 'RoleController',
-        'permission'      => 'permissionController',
-        'product'   => 'ProductController',
-        'consumer'  => 'ConsumerController',
-        'category'  => 'CategoryController',
-        'tag'       => 'TagController',
-        'source'    => 'SourceController',
-        'delivery'  => 'ShippingController',
-        'company'   => 'ShippingCompanyController',
-        'order'     => 'OrderController',
-        'country'   => 'CityController',
+        'user'          => 'UserController',
+        'stock'         => 'StockController',
+        'role'          => 'RoleController',
+        'permission'    => 'permissionController',
+        'product'       => 'ProductController',
+        'consumer'      => 'ConsumerController',
+        'contact'       => 'ContactController',
+        'gestion'       => 'GestionController',
+        'category'      => 'CategoryController',
+        'tag'           => 'TagController',
+        'source'        => 'SourceController',
+        'orderStatus'   => 'OrderStatusController',
+        'delivery'      => 'ShippingController',
+        'company'       => 'ShippingCompanyController',
+        'order'         => 'OrderController',
+        'country'       => 'CityController',
     ]);
     // delivery
     Route::group(['prefix' => 'delivery'], function () {
@@ -131,5 +140,4 @@ Route::namespace('App\\Http\\Controllers\\API\V1')->middleware(['cors','auth:api
     });
 });
 
-
-//namespace('App/Http/Controllers/API/Auth/Delivery')->
+include('Api/gestion.php');

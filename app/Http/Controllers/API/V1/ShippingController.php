@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\V1;
 
 use App\Http\Resources\DeliveryMenCollection;
 use App\Http\Resources\DeliveryMenResource;
+use App\Http\Resources\ShippingCollection;
 use App\Models\Shipping;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -30,15 +31,13 @@ class ShippingController extends BaseController
      */
     public function index()
     {
-        $shippings = $this->shipping->where("type", "men")->get();
-
+        $shippings = $this->shipping->get();
         return $this->sendResponse(new DeliveryMenCollection($shippings), 'shipping list');
     }
     public function list()
     {
         $shippings = shipping::all();
-
-        return $this->sendResponse($shippings, 'shipping list');
+        return $this->sendResponse($shippings, 'shipping list 333');
     }
 
     /**
@@ -52,13 +51,13 @@ class ShippingController extends BaseController
         $shipping = $this->shipping->create([
             'name'      => $request->name,
             'email'     => $request->email,
-            'password'  => encrypt($request->password),
+            'password'  => Hash::make($request->password),
             'price'     => $request->price,
             'dure'      => $request->dure,
-            'type'      => $request->type,
             'phone'     => $request->phone,
             'city'      => $request->city,
-            'status'      => $request->status,
+            'city_id'   => $request->city_id,
+            'status'    => $request->status,
         ]);
         return $this->sendResponse($shipping, 'shipping Created Successfully');
     }
@@ -96,13 +95,9 @@ class ShippingController extends BaseController
      */
     public function destroy($id)
     {
-
         $this->authorize('isAdmin');
-
         $shipping = $this->shipping->findOrFail($id);
-
         $shipping->delete();
-
         return $this->sendResponse($shipping, 'shipping has been Deleted');
     }
 
@@ -110,7 +105,6 @@ class ShippingController extends BaseController
     {
         $fileName = time() . '.' . $request->file->getClientOriginalExtension();
         $request->file->move(public_path('upload'), $fileName);
-
         return response()->json(['success' => true]);
     }
 }

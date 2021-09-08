@@ -8,6 +8,7 @@ use App\Http\Resources\ProductResource;
 use App\Models\Contact;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class ContactController extends BaseController
 {
@@ -64,7 +65,7 @@ class ContactController extends BaseController
             'prenom'        => $request->get('prenom'),
             'nom'           => $request->get('nom'),
             'email'         => $request->get('email'),
-            'password'      => encrypt($request['password']),
+            'password'      => Hash::make($request['password']),
             'adresse'       => $request->get('adresse'),
             'ville'         => $request->get('ville'),
             'phone'         => $request->get('phone'),

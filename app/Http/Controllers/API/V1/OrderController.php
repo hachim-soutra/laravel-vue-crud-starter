@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 use App\Imports\OrderImport;
+use App\Models\City;
 use App\Models\Product;
 use App\Models\Shipping;
 use Maatwebsite\Excel\Facades\Excel;
@@ -30,11 +31,14 @@ class OrderController extends BaseController
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($status = null)
+        public function index($status = null,City $city =null)
     {
         $orders = $this->order->allOrder();
         if($status){
             $orders = $orders->where('order_status_id',$status)->whereNull('shipping_id');
+        }
+        if($city){
+            $orders = $orders->where('city_id',$city->id);
         }
         return $this->sendResponse(new OrderCollection($orders), 'order list');
     }
@@ -48,6 +52,7 @@ class OrderController extends BaseController
         foreach ($request->orders as $order) {
             $item = Order::find($order["id"]);
             $item->shipping_id = $shipping->id;
+            $item->livraison_status_id = 1;
             foreach ($order["product_array"] as $produit) {
                 $product = Product::find($produit["id"]);
                 $product->quantity -= $produit["quantity"];

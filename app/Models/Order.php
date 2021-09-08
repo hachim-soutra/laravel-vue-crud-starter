@@ -12,7 +12,7 @@ class Order extends Model
     use HasFactory, Notifiable;
 
     protected $fillable = [
-        'order_status_id', 'tarif', 'package', 'source_id', 'consumer_id', 'product_id', 'upsell_json', 'note_json', 'shipping_id', 'shipping_json', 'quantity', 'total', 'subTotal', 'dateConfirmation', 'city', 'city_id', 'user_id', 'gestion_id','shipping_adresse','contact_id'
+        'order_status_id', 'tarif', 'package', 'source_id', 'consumer_id', 'product_id', 'upsell_json', 'note_json', 'shipping_id', 'shipping_json', 'quantity', 'total', 'subTotal', 'dateConfirmation', 'city', 'city_id', 'user_id', 'gestion_id','shipping_adresse','contact_id','livraison_status_id'
     ];
 
     protected $appends = array('consumer_name', 'product_name');
@@ -46,6 +46,10 @@ class Order extends Model
     public function status()
     {
         return $this->belongsTo(OrderStatus::class,'order_status_id');
+    }
+    public function statusLivraison()
+    {
+        return $this->belongsTo(StatusLivraison::class,'livraison_status_id');
     }
     public function getNoteAttribute()
     {

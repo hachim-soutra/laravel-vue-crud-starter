@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Http\Resources\DeliveryMenResource;
+use App\Models\City;
 use App\Models\Shipping;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -27,9 +28,12 @@ class ShippingCompanyController extends BaseController
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(City $city =null)
     {
         $shippings = $this->shipping->where("type", "!=", "men")->get();
+        if($city){
+            $shippings = $shippings->where('city_id',$city->id);
+        }
 
         return $this->sendResponse($shippings, 'shipping list 11');
     }

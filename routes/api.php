@@ -19,6 +19,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/livre/{order:id}', function (Order $order) {
+    if($order->livraison_status_id  == 1){
+        $order->livraison_status_id  = 2;
+        $order->save();
+    }
+    $responce['message'] = 'ok';
+    return response()->json($responce, 200);
+});
 Route::post('order/{source:token}/store', function (Source $source) {
 
     $user = Consumer::firstOrNew([
@@ -104,7 +112,8 @@ Route::namespace('App\\Http\\Controllers\\API\V1')->middleware(['cors','auth:api
     Route::get('order-delivred/{shipping_id}', 'OrderController@getDelivryOrder');
     Route::post('order/import', 'OrderController@import');
     Route::put('order/status/{id}', 'OrderController@updateStatus');
-    Route::get('order/status/{status}', 'OrderController@index');
+    Route::get('order/status/{status}/{city:id}', 'OrderController@index');
+    Route::get('delivery/list/{city:id}', 'ShippingController@index');
     Route::post('/order/rammasage/{shipping:id}', 'OrderController@rammasage');
     Route::get('stock-contact/{contact:id}', 'ContactController@getStock');
 

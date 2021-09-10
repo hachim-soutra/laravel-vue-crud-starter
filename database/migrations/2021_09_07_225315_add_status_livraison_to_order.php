@@ -14,7 +14,7 @@ class AddStatusLivraisonToOrder extends Migration
     public function up()
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->integer('livraison_status_id')->nullable();
+            $table->integer('status_livraison_id')->nullable();
         });
     }
 
@@ -26,7 +26,7 @@ class AddStatusLivraisonToOrder extends Migration
     public function down()
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->dropColumn('livraison_status_id');
+            $table->dropColumn('status_livraison_id');
         });
     }
 }

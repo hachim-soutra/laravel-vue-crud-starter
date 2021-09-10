@@ -32,6 +32,8 @@ class DeliveryMenResource extends JsonResource
             'order_livre'           => $this->order_livre,
             'credit'                => $this->credit,
             'order_paye'            => $this->order_paye,
+            'order_retour'          => $this->order_retour,
+            'order_expider'         => $this->order_expider,
             'order_reportie'        => $this->order_reportie,
             'order_pas_reponse'     => $this->order_pas_reponse,
         ];

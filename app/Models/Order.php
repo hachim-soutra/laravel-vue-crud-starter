@@ -12,7 +12,7 @@ class Order extends Model
     use HasFactory, Notifiable;
 
     protected $fillable = [
-        'order_status_id', 'tarif', 'package', 'source_id', 'consumer_id', 'product_id', 'upsell_json', 'note_json', 'shipping_id', 'shipping_json', 'quantity', 'total', 'subTotal', 'dateConfirmation', 'city', 'city_id', 'user_id', 'gestion_id','shipping_adresse','contact_id','livraison_status_id'
+        'order_status_id', 'tarif', 'package', 'source_id', 'consumer_id', 'product_id', 'upsell_json', 'note_json', 'shipping_id', 'shipping_json', 'quantity', 'total', 'subTotal', 'dateConfirmation', 'city', 'city_id', 'user_id', 'gestion_id','shipping_adresse','contact_id','status_livraison_id'
     ];
 
     protected $appends = array('consumer_name', 'product_name');
@@ -49,7 +49,7 @@ class Order extends Model
     }
     public function statusLivraison()
     {
-        return $this->belongsTo(StatusLivraison::class,'livraison_status_id');
+        return $this->belongsTo(StatusLivraison::class,'status_livraison_id');
     }
     public function getNoteAttribute()
     {
@@ -97,6 +97,18 @@ class Order extends Model
             ->send(\App\Models\Order::query()->where('shipping_id', $id))
             ->through([
                 \App\QueryFilters\Status::class,
+            ])
+            ->thenReturn()
+            ->latest()
+            ->get();
+        return $posts;
+    }
+    public static function delivryOrderExpide($id)
+    {
+        $posts = app(Pipeline::class)
+            ->send(\App\Models\Order::query()->where('shipping_id', $id))
+            ->through([
+                \App\QueryFilters\statusLivraison::class,
             ])
             ->thenReturn()
             ->latest()

@@ -110,8 +110,10 @@ Route::namespace('App\\Http\\Controllers\\API\V1')->middleware(['cors','auth:api
     Route::get('permissions/list/{id}', 'PermissionController@indexByRole');
 
     Route::get('order-delivred/{shipping_id}', 'OrderController@getDelivryOrder');
+    Route::get('order-expide/{shipping_id}', 'OrderController@getDelivryOrderExpide');
     Route::post('order/import', 'OrderController@import');
     Route::put('order/status/{id}', 'OrderController@updateStatus');
+    Route::put('order/status-livreur/{id}', 'OrderController@updateStatusLivreur');
     Route::get('order/status/{status}/{city:id}', 'OrderController@index');
     Route::get('delivery/list/{city:id}', 'ShippingController@index');
     Route::post('/order/rammasage/{shipping:id}', 'OrderController@rammasage');
@@ -130,6 +132,7 @@ Route::namespace('App\\Http\\Controllers\\API\V1')->middleware(['cors','auth:api
         'tag'           => 'TagController',
         'source'        => 'SourceController',
         'orderStatus'   => 'OrderStatusController',
+        'livreurStatus' => 'LivreurStatusController',
         'delivery'      => 'ShippingController',
         'company'       => 'ShippingCompanyController',
         'order'         => 'OrderController',

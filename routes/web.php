@@ -17,6 +17,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
+    QrCode::size(500)
+            ->format('png')
+            ->generate('codingdriver.com', public_path('images/qrcode.png'));
     // return view('welcome');
     return redirect('/dashboard');
 });

@@ -47,6 +47,11 @@ class OrderController extends BaseController
         $orders = $this->order->delivryOrder($shipping_id);
         return $this->sendResponse(new OrderCollection($orders), 'order list');
     }
+    public function getDelivryOrderExpide($shipping_id)
+    {
+        $orders = $this->order->delivryOrderExpide($shipping_id);
+        return $this->sendResponse(new OrderCollection($orders), 'order list');
+    }
     public function rammasage(Shipping $shipping, Request $request)
     {
         foreach ($request->orders as $order) {
@@ -126,6 +131,9 @@ class OrderController extends BaseController
             'shipping_adresse' => $request->shipping_adresse
         ]);
 
+        \QrCode::size(500)
+            ->format('png')
+            ->generate('codingdriver.com', public_path('images/qrcode.png'));
 
         $user = auth()->user();
 
@@ -218,6 +226,17 @@ class OrderController extends BaseController
             'user_id'         => auth()->user()->id,
 
         ]);
+        return $this->sendResponse($order, 'order Information has been updated');
+    }
+    public function updateStatusLivreur(Request $request, $id)
+    {
+        $request->validate([
+            'status_livraison_id' => 'required|exists:status_livraisons,id'
+        ]);
+        $order = Order::findOrFail($id);
+        $order->status_livraison_id = $request->status_livraison_id;
+        $order->user_id = auth()->user()->id;
+        $order->save();
         return $this->sendResponse($order, 'order Information has been updated');
     }
 

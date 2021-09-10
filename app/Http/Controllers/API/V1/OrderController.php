@@ -57,7 +57,7 @@ class OrderController extends BaseController
         foreach ($request->orders as $order) {
             $item = Order::find($order["id"]);
             $item->shipping_id = $shipping->id;
-            $item->livraison_status_id = 1;
+            $item->status_livraison_id = 1;
             foreach ($order["product_array"] as $produit) {
                 $product = Product::find($produit["id"]);
                 $product->quantity -= $produit["quantity"];

@@ -20,8 +20,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/livre/{order:id}', function (Order $order) {
-    if($order->livraison_status_id  == 1){
-        $order->livraison_status_id  = 2;
+    if($order->status_livraison_id  == 1){
+        $order->status_livraison_id  = 2;
         $order->save();
     }
     $responce['message'] = 'ok';

@@ -82,6 +82,7 @@ class OrderController extends BaseController
      */
     public function store(Request $request)
     {
+
         $note_json = collect([
             "note"          => $request->note,
             "delivery_note" => $request->delivery_note,

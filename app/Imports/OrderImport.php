@@ -38,7 +38,7 @@ class OrderImport implements WithStartRow , ToCollection
 
         $name   = explode(" ",$row[1],2);
         $prenom = $name[0];
-        $nom    = $name[1];
+        $nom    = isset($name[1]) ? $name[1] : '';
 
         $user = Consumer::firstOrNew([
             'prenom' =>  $prenom,

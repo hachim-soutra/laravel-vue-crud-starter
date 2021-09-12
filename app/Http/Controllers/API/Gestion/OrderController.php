@@ -34,6 +34,11 @@ class OrderController extends BaseController
         $orders = auth()->user()->orderValide;
         return $this->sendResponse(new OrderResource($orders), 'order list');
     }
+    public function historique()
+    {
+        $orders = auth()->user()->orderHistorique;
+        return $this->sendResponse(new OrderCollection($orders), 'order list');
+    }
     public function refresh()
     {
         if(auth()->user()->orderValide){
@@ -94,7 +99,7 @@ class OrderController extends BaseController
 
         $user = Consumer::firstOrNew([
             'prenom' =>  request('consumer.prenom'),
-            'nom'    =>  request('consumer.nom')
+            'nom'    =>  request('consumer.nom') ? request('consumer.nom') : ''
         ]);
         $user->adresse = request('consumer.adresse');
         $user->ville   = request('consumer.ville');
@@ -119,6 +124,7 @@ class OrderController extends BaseController
             'consumer_id'   => $user->id,
             'contact_id'   => $request->contact_id,
             'product_id'    => 1,
+            'dateConfirmation'    => now(),
             'upsell_json'   => $product_json,
             'note_json'     => $note_json,
             'shipping_id'   => $request->get('shipping_id'),
@@ -157,6 +163,9 @@ class OrderController extends BaseController
      */
     public function update(Request $request, $id)
     {
+        $this->validate($request,[
+            'order_status_id'=>'required|different:1',
+         ]);
         $order = $this->order->findOrFail($id);
         // $order->update($request->all());
         $note_json = collect([
@@ -185,7 +194,7 @@ class OrderController extends BaseController
 
         $user = Consumer::firstOrNew([
             'prenom' =>  request('consumer.prenom'),
-            'nom'    =>  request('consumer.nom')
+            'nom'    =>  request('consumer.nom') ? request('consumer.nom') : ''
         ]);
         $user->adresse = request('consumer.adresse');
         $user->ville   = request('consumer.ville');
@@ -198,6 +207,7 @@ class OrderController extends BaseController
             'consumer_id'           => $request->consumer_id,
             'upsell_json'           => $product_json,
             'note_json'             => $note_json,
+            'dateConfirmation'      => now(),
             'shipping_json'         => $shipping_json,
             'total'                 => $request->get('total'),
             'subTotal'              => $request->get('subTotal'),

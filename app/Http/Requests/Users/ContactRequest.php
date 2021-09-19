@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Products;
+namespace App\Http\Requests\Users;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ProductRequest extends FormRequest
+class ContactRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -29,6 +29,7 @@ class ProductRequest extends FormRequest
             return $this->updateRules();
         }
     }
+
     /**
      * Define validation rules to store method for resource creation
      *
@@ -37,11 +38,13 @@ class ProductRequest extends FormRequest
     public function createRules(): array
     {
         return [
-            'name' => 'required|string|max:191|unique:products',
-            'description' => 'required|string|max:1000',
-            'price' => 'required|numeric|gt:0',
-            'quantity' => 'required|numeric|gt:0',
-            'sell' => 'required|numeric|gt:price',
+            'nom' => 'required|string|max:191',
+            'prenom' => 'required|string|max:191',
+            'phone' => 'required|string|max:191',
+            'ville' => 'required|string|max:191',
+            'adresse' => 'required|string|max:191',
+            'email' => 'required|string|email|max:191|unique:users',
+            'password' => 'required|string|min:6'
         ];
     }
 
@@ -53,11 +56,12 @@ class ProductRequest extends FormRequest
     public function updateRules(): array
     {
         return [
-            'name' => 'required|string|max:191|unique:products,name,' . $this->get('id'),
-            'description' => 'required|string|max:1000',
-            'price' => 'required|numeric|gt:0',
-            'quantity' => 'required|numeric|gt:0',
-            'sell' => 'required|numeric|gt:price',
+            'nom' => 'required|string|max:191',
+            'prenom' => 'required|string|max:191',
+            'phone' => 'required|string|max:191',
+            'ville' => 'required|string|max:191',
+            'adresse' => 'required|string|max:191',
+            'email' => 'sometimes|string|email|max:191|unique:users,email,' . $this->get('id')
         ];
     }
 }

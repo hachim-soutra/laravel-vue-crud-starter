@@ -35,12 +35,14 @@ class Gestion extends Authenticatable
     public function getOrderHistoriqueAttribute()
     {
         // dd($this->orders->where('order_status_id',1));
-        return $this->orders()->where('order_status_id',3)->where('dateConfirmation','>',now()->subDays(2)->toDateTimeString())->get();
+        return $this->orders()->where('dateConfirmation','>',now()->subDays(3)->toDateTimeString())->get();
     }
+
     public function orders()
     {
         return $this->hasMany(Order::class);
     }
+
     public function country()
     {
         return $this->belongsTo(City::class,'city_id');

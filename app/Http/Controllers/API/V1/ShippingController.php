@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\V1;
 
+use App\Http\Requests\Users\LivreurRequest;
 use App\Http\Resources\DeliveryMenCollection;
 use App\Http\Resources\DeliveryMenResource;
 use App\Http\Resources\ShippingCollection;
@@ -30,11 +31,11 @@ class ShippingController extends BaseController
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(City $city =null)
+    public function index(City $city = null)
     {
         $shippings = $this->shipping->get();
-        if($city){
-            $shippings = $shippings->where('city_id',$city->id);
+        if ($city) {
+            $shippings = $shippings->where('city_id', $city->id);
         }
         return $this->sendResponse(new DeliveryMenCollection($shippings), 'shipping list');
     }
@@ -50,7 +51,7 @@ class ShippingController extends BaseController
      * @param  App\Http\Requests\shippings\shippingRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(LivreurRequest $request)
     {
         $shipping = $this->shipping->create([
             'name'      => $request->name,
@@ -85,7 +86,7 @@ class ShippingController extends BaseController
      * @param  \App\shipping  $shipping
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(LivreurRequest $request, $id)
     {
         $shipping = $this->shipping->findOrFail($id);
         $shipping->update($request->all());

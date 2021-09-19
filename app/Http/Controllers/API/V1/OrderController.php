@@ -31,14 +31,34 @@ class OrderController extends BaseController
      *
      * @return \Illuminate\Http\Response
      */
-        public function index($status = null,City $city =null)
+    public function index($status = null, City $city = null, Request $request)
     {
         $orders = $this->order->allOrder();
-        if($status){
-            $orders = $orders->where('order_status_id',$status)->whereNull('shipping_id');
+        if ($status) {
+            $orders = $orders->where('order_status_id', $status)->whereNull('shipping_id');
         }
-        if($city){
-            $orders = $orders->where('city_id',$city->id);
+        if ($city) {
+            $orders = $orders->where('city_id', $city->id);
+        }
+        if ($request->dateStart && $request->dateEnd) {
+
+            if ($request->dateStart > $request->dateEnd) {
+                $orders = $orders->whereBetween('created_at', [$request->dateEnd, $request->dateStart]);
+            }
+            if ($request->dateStart <= $request->dateEnd) {
+                $orders = $orders->whereBetween('created_at', [$request->dateStart, $request->dateEnd]);
+            }
+        }
+        if ($request->contact_id) {
+            $orders = $orders->where('contact_id', $request->contact_id);
+        }
+
+        if ($request->city_id) {
+            $orders = $orders->where('city_id', $request->city_id);
+        }
+
+        if ($request->order_status_id) {
+            $orders = $orders->where('order_status_id', $request->order_status_id);
         }
         return $this->sendResponse(new OrderCollection($orders), 'order list');
     }
@@ -47,9 +67,37 @@ class OrderController extends BaseController
         $orders = $this->order->delivryOrder($shipping_id);
         return $this->sendResponse(new OrderCollection($orders), 'order list');
     }
-    public function getDelivryOrderExpide($shipping_id)
+    public function getOrderReportie()
+    {
+        $orders = $this->order->where('status_livraison_id', 3)->get();
+        return $this->sendResponse(new OrderCollection($orders), 'order list');
+    }
+    public function getDelivryOrderExpide($shipping_id, Request $request)
     {
         $orders = $this->order->delivryOrderExpide($shipping_id);
+        if ($request->dateStart && $request->dateEnd) {
+
+            if ($request->dateStart > $request->dateEnd) {
+                $orders = $orders->whereBetween('created_at', [$request->dateEnd, $request->dateStart]);
+            }
+            if ($request->dateStart <= $request->dateEnd) {
+                $orders = $orders->whereBetween('created_at', [$request->dateStart, $request->dateEnd]);
+            }
+        }
+        if ($request->contact_id) {
+            $orders = $orders->where('contact_id', $request->contact_id);
+        }
+
+        if ($request->city_id) {
+            $orders = $orders->where('city_id', $request->city_id);
+        }
+
+        if ($request->order_status_id) {
+            $orders = $orders->where('order_status_id', $request->order_status_id);
+        }
+        if ($request->status_livraison_id) {
+            $orders = $orders->where('status_livraison_id', $request->status_livraison_id);
+        }
         return $this->sendResponse(new OrderCollection($orders), 'order list');
     }
     public function rammasage(Shipping $shipping, Request $request)
@@ -72,7 +120,6 @@ class OrderController extends BaseController
     {
         Excel::import(new OrderImport($request->country_id, $request->contact_id), $request->file('file'));
         return $this->sendResponse(array(), 'All good!');
-
     }
     /**
      * Store a newly created resource in storage.
@@ -216,26 +263,26 @@ class OrderController extends BaseController
         ]);
         return $this->sendResponse($order, 'order Information has been updated');
     }
-    public function updateStatus(Request $request, $id)
+    public function relancerOrder(Request $request, $id)
     {
-        $request->validate([
-            'order_status_id' => 'required|exists:order_statuses,id'
-        ]);
         $order = $this->order->findOrFail($id);
         $order->update([
-            'order_status_id' => $request->order_status_id,
-            'user_id'         => auth()->user()->id,
-
+            'order_status_id'     => 1,
+            'status_livraison_id' => null,
+            'gestion_id'          => null,
+            'shipping_id'         => null,
         ]);
         return $this->sendResponse($order, 'order Information has been updated');
     }
     public function updateStatusLivreur(Request $request, $id)
     {
         $request->validate([
-            'status_livraison_id' => 'required|exists:status_livraisons,id'
+            'status_livraison_id' => 'required|exists:status_livraisons,id',
+            'order_status_id' => 'required|exists:order_statuses,id'
         ]);
         $order = Order::findOrFail($id);
         $order->status_livraison_id = $request->status_livraison_id;
+        $order->order_status_id     = $request->order_status_id;
         $order->user_id = auth()->user()->id;
         $order->save();
         return $this->sendResponse($order, 'order Information has been updated');

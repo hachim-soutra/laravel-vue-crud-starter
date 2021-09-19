@@ -10,6 +10,7 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -18,33 +19,31 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     QrCode::size(500)
-            ->format('png')
-            ->generate('codingdriver.com', public_path('images/qrcode.png'));
+        ->format('png')
+        ->generate('codingdriver.com', public_path('images/qrcode.png'));
     // return view('welcome');
     return redirect('/dashboard');
 });
 Route::get('/seed', function () {
 
     $permissions = [
+        'Super admin',
         'admin',
-        'client',
         'manager',
         'suivi',
         'confirmation',
         'rammassage',
-     ];
+    ];
 
 
-     foreach ($permissions as $permission) {
+    foreach ($permissions as $permission) {
 
-        $role = Role::where([
+        $role = Role::create([
             'name' => $permission
-        ])->first();
+        ]);
 
         $role->givePermissionTo(Permission::all());
-     }
-
-
+    }
 });
 
 Auth::routes(['verify' => true]);
@@ -58,9 +57,9 @@ Route::get('home', function () {
 Route::get('/shippings/delivery/{any}', function () {
     return view('home');
 })->where('any', '.*')
-->middleware('auth');
+    ->middleware('auth');
 
 Route::get('/{vue_capture?}', function () {
     return view('home');
 })->where('vue_capture', '.*')
-->middleware('auth');
+    ->middleware('auth');

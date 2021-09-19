@@ -58,7 +58,7 @@ class UserRequest extends FormRequest
         return [
             // 'type' => 'sometimes|in:admin,user',
             'city_id' => 'required|exists:cities,id',
-            'role' => 'required|exists:roles,id',
+            'role_id' => 'required|exists:roles,id',
             'status' => 'required|in:active,blocked',
             'name' => 'sometimes|string|max:191',
             'email' => 'sometimes|string|email|max:191|unique:users,email,' . $this->get('id')

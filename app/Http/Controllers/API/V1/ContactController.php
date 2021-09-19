@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\V1;
 
+use App\Http\Requests\Users\ContactRequest;
 use App\Http\Resources\ContactCollection;
 use App\Http\Resources\ContactResource;
 use App\Http\Resources\ProductResource;
@@ -59,7 +60,7 @@ class ContactController extends BaseController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ContactRequest $request)
     {
         $Contact = $this->Contact->create([
             'prenom'        => $request->get('prenom'),
@@ -72,7 +73,6 @@ class ContactController extends BaseController
         ]);
 
         return $this->sendResponse($Contact, 'Contact Created Successfully');
-
     }
 
     /**
@@ -103,9 +103,9 @@ class ContactController extends BaseController
         $products = $contact->stocks()->select('product_id')->groupBy('product_id')->get()->toArray();
         $col = collect();
         foreach ($products as $pro) {
-            $prod = Product::where('id',$pro)->first();
+            $prod = Product::where('id', $pro)->first();
             $col->push([
-                "produit" => $prod->name, "quantity" =>  $contact->stocks()->where('product_id',$pro)->sum('quantity')
+                "produit" => $prod->name, "quantity" =>  $contact->stocks()->where('product_id', $pro)->sum('quantity')
             ]);
         }
         $data["delivery"] = $col;
@@ -123,7 +123,7 @@ class ContactController extends BaseController
      * @param  \App\Models\Contact  $Contact
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(ContactRequest $request, $id)
     {
         $Contact = $this->Contact->findOrFail($id);
 
@@ -147,6 +147,5 @@ class ContactController extends BaseController
         $Contact->delete();
 
         return $this->sendResponse($Contact, 'Contact has been Deleted');
-
     }
 }

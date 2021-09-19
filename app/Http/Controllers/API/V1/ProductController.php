@@ -21,15 +21,15 @@ class ProductController extends BaseController
      */
     public function __construct(Product $product)
     {
-        $this->middleware('role:Super Admin|permission:product-list|product-create|product-edit|product-delete', ['only' => ['index','show']]);
+        // $this->middleware('role:Super Admin|permission:product-list|product-create|product-edit|product-delete', ['only' => ['index','show']]);
 
-        $this->middleware('role:Super Admin|permission:product-create', ['only' => ['create','store']]);
+        // $this->middleware('role:Super Admin|permission:product-create', ['only' => ['create','store']]);
 
-        $this->middleware('role:Super Admin|permission:product-edit', ['only' => ['edit','update']]);
+        // $this->middleware('role:Super Admin|permission:product-edit', ['only' => ['edit','update']]);
 
-        $this->middleware('role:Super Admin|permission:product-delete', ['only' => ['destroy']]);
+        // $this->middleware('role:Super Admin|permission:product-delete', ['only' => ['destroy']]);
 
-        $this->middleware('auth:api');
+        // $this->middleware('auth:api');
         $this->product = $product;
     }
 
@@ -109,17 +109,17 @@ class ProductController extends BaseController
     public function update(ProductRequest $request, $id)
     {
         $product = $this->product->findOrFail($id);
-        $offre_json = collect();
-        foreach ($request->offre as $key => $produit) {
-            $offre_json->push([
-                "id"          => $key,
-                "unit_cost"   => $produit['unit_cost'],
-                "quantity"    => $produit['quantity'],
-            ]);
-        };
-        $request->merge([
-            'offre_json' => $offre_json,
-        ]);
+        // $offre_json = collect();
+        // foreach ($request->offre as $key => $produit) {
+        //     $offre_json->push([
+        //         "id"          => $key,
+        //         "unit_cost"   => $produit['unit_cost'],
+        //         "quantity"    => $produit['quantity'],
+        //     ]);
+        // };
+        // $request->merge([
+        //     'offre_json' => $offre_json,
+        // ]);
         $product->update($request->all());
         return $this->sendResponse($product, 'Product Information has been updated');
     }

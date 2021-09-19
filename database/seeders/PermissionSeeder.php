@@ -17,30 +17,44 @@ class PermissionSeeder extends Seeder
 
         $permissions = [
 
-            'role-list',
+            'voir pays',
+            'ajouter pays',
+            'mise a jour pays',
 
-            'role-create',
+            'voir partner',
+            'ajouter partner',
+            'mise a jour partner',
 
-            'role-edit',
+            'voir user',
+            'ajouter user',
+            'mise a jour user',
 
-            'role-delete',
+            'voir produit',
+            'ajouter produit',
+            'mise a jour produit',
 
-            'product-list',
+            'voir livreur',
+            'ajouter livreur',
+            'mise a jour livreur',
 
-            'product-create',
+            'voir équipe confirmation',
+            'ajouter équipe confirmation',
+            'mise a jour équipe confirmation',
 
-            'product-edit',
+            'voir command',
+            'ramassage command',
+            'reportiez command',
+            'ajouter command',
+            'mise a jour command',
 
-            'product-delete'
 
-         ];
+        ];
 
-         Permission::all()->delete();
+        // Permission::get()->delete();
 
-         foreach ($permissions as $permission) {
+        foreach ($permissions as $permission) {
 
-              Permission::create(['name' => $permission]);
-
-         }
+            Permission::create(['name' => $permission]);
+        }
     }
 }

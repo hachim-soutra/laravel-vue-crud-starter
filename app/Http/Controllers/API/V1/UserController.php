@@ -57,16 +57,14 @@ class UserController extends BaseController
         $user = User::create([
             'name' => $request['name'],
             'email' => $request['email'],
-            'password' => encrypt($request['password']),
+            'password' => Hash::make($request['password']),
             'city_id' => $request['city_id'],
             'role_id' => $request['role_id'],
             'user_id' => auth()->user()->id,
             'status' => $request['status'],
         ]);
         $user->assignRole(Role::find($request->input('role')));
-        foreach ($request['permissions'] as  $value) {
-            $user->givePermissionTo(Permission::find($value)->name);
-        };
+        $user->givePermissionTo($request['permissions']);
         UserRegistred::dispatch(auth()->user());
         return $this->sendResponse($user, 'User Created Successfully');
     }
@@ -89,12 +87,12 @@ class UserController extends BaseController
     {
         $user = User::findOrFail($id);
         if (!empty($request->password)) {
-            $request->merge(['password' => encrypt($request['password'])]);
+            $request->merge(['password' => Hash::make($request['password'])]);
         }
         $user->update($request->all());
-        DB::table('model_has_roles')->where('model_id',$id)->delete();
+        DB::table('model_has_roles')->where('model_id', $id)->delete();
         $user->roles()->detach();
-        $user->assignRole(Role::find($request->input('role')));
+        $user->assignRole(Role::find($request->input('role_id')));
         $user->permissions()->detach();
         foreach ($request['permissions'] as  $value) {
             $user->givePermissionTo(Permission::find($value)->name);

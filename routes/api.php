@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/livre/{order:id}', function (Order $order) {
-    if($order->status_livraison_id  == 1){
+    if ($order->status_livraison_id  == 1) {
         $order->status_livraison_id  = 2;
         $order->save();
     }
@@ -86,7 +86,7 @@ Route::namespace('App\Http\Controllers\API\User')->middleware('cors')->prefix('a
     Route::post('login', 'AuthController@login');
 });
 
-Route::namespace('App\\Http\\Controllers\\API\V1')->middleware(['cors','auth:api'])->group(function () {
+Route::namespace('App\\Http\\Controllers\\API\V1')->middleware(['cors', 'auth:api'])->group(function () {
     Route::get('profile', 'ProfileController@profile');
     Route::get('dashboard', 'ProfileController@dashboard');
     Route::get('dashboard-products', 'ProfileController@getProduct');
@@ -111,8 +111,10 @@ Route::namespace('App\\Http\\Controllers\\API\V1')->middleware(['cors','auth:api
 
     Route::get('order-delivred/{shipping_id}', 'OrderController@getDelivryOrder');
     Route::get('order-expide/{shipping_id}', 'OrderController@getDelivryOrderExpide');
+    Route::get('order-reportie', 'OrderController@getOrderReportie');
     Route::post('order/import', 'OrderController@import');
     Route::put('order/status/{id}', 'OrderController@updateStatus');
+    Route::put('order-relancer/{id}', 'OrderController@relancerOrder');
     Route::put('order/status-livreur/{id}', 'OrderController@updateStatusLivreur');
     Route::get('order/status/{status}/{city:id}', 'OrderController@index');
     Route::get('delivery/list/{city:id}', 'ShippingController@index');

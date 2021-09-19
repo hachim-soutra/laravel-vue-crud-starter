@@ -20,6 +20,7 @@ class OrderResource extends JsonResource
             'package'               => $this->package,
             'status'                => $this->status ? $this->status->id : 0,
             'statusLivraison'       => $this->statusLivraison ? $this->statusLivraison->id : 0,
+            'statusLivraisonName'   => $this->statusLivraison ? $this->statusLivraison->name : '',
             'statusName'            => $this->status ? $this->status->name : '',
             'source'                => $this->source,
             'consumer'              => $this->consumer,

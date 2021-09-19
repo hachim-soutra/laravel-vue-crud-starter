@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Products;
+namespace App\Http\Requests\Users;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ProductRequest extends FormRequest
+class LivreurRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -29,6 +29,7 @@ class ProductRequest extends FormRequest
             return $this->updateRules();
         }
     }
+
     /**
      * Define validation rules to store method for resource creation
      *
@@ -37,11 +38,14 @@ class ProductRequest extends FormRequest
     public function createRules(): array
     {
         return [
-            'name' => 'required|string|max:191|unique:products',
-            'description' => 'required|string|max:1000',
+            'name' => 'required|string|max:191',
+            'city' => 'required|string|max:191',
+            'city_id' => 'required|exists:cities,id',
+            'phone' => 'required|string|max:191',
             'price' => 'required|numeric|gt:0',
-            'quantity' => 'required|numeric|gt:0',
-            'sell' => 'required|numeric|gt:price',
+            'dure' => 'required|numeric|gt:0',
+            'email' => 'required|string|email|max:191|unique:shippings',
+            'password' => 'required|string|min:6'
         ];
     }
 
@@ -53,11 +57,13 @@ class ProductRequest extends FormRequest
     public function updateRules(): array
     {
         return [
-            'name' => 'required|string|max:191|unique:products,name,' . $this->get('id'),
-            'description' => 'required|string|max:1000',
+            'name' => 'required|string|max:191',
+            'city' => 'required|string|max:191',
+            'city_id' => 'required|exists:cities,id',
+            'phone' => 'required|string|max:191',
             'price' => 'required|numeric|gt:0',
-            'quantity' => 'required|numeric|gt:0',
-            'sell' => 'required|numeric|gt:price',
+            'dure' => 'required|numeric|gt:0',
+            'email' => 'sometimes|string|email|max:191|unique:shippings,email,' . $this->get('id')
         ];
     }
 }

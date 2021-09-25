@@ -12,13 +12,16 @@ use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 
 use Maatwebsite\Excel\Concerns\ToCollection;
+use Maatwebsite\Excel\Concerns\WithCustomCsvSettings;
 
-class OrderImport implements WithStartRow , ToCollection
+class OrderImport implements WithStartRow, ToCollection, WithCustomCsvSettings
+
 {
     protected $id;
     protected $contact_id;
 
-    function __construct($id, $contact_id) {
+    function __construct($id, $contact_id)
+    {
         $this->id = $id;
         $this->contact_id = $contact_id;
     }
@@ -26,65 +29,73 @@ class OrderImport implements WithStartRow , ToCollection
     {
         return 2;
     }
+    public function getCsvSettings(): array
+    {
+        return [
+            'input_encoding' => 'ISO-8859-1',
+            'delimiter' => ";"
+        ];
+    }
     /**
-    * @param array $row
-    *
-    * @return \Illuminate\Database\Eloquent\Model|null
-    */
+     * @param array $row
+     *
+     * @return \Illuminate\Database\Eloquent\Model|null
+     */
     public function collection(Collection $rows)
     {
         foreach ($rows as $row) {
-            if(isset($row[1]) && isset($row[1])){
 
-        $name   = explode(" ",$row[1],2);
-        $prenom = $name[0];
-        $nom    = isset($name[1]) ? $name[1] : '';
+            if (isset($row[1]) && isset($row[1])) {
 
-        $user = Consumer::firstOrNew([
-            'prenom' =>  $prenom,
-            'nom'    =>  $nom
-        ]);
-        $user->adresse = $row[3];
-        $user->ville   = $row[4];
-        $user->phone   = $row[2];
-        $user->status  = "active";
-        $user->save();
+                $name   = explode(" ", $row[1], 2);
+                $prenom = $name[0];
+                $nom    = isset($name[1]) ? $name[1] : '';
 
-        $note_json = collect([
-            "note"               => $row[8],
-            "delivery_note"      => "",
-            "sell_shipping_cost" => ""
-        ]);
-        $produit = Product::whereName($row[5])->first();
-        $product_json = collect();
+                $user = Consumer::firstOrNew([
+                    'prenom' =>  $prenom,
+                    'nom'    =>  $nom
+                ]);
+                $user->adresse = $row[3];
+                $user->ville   = $row[4];
+                $user->phone   = $row[2];
+                $user->status  = "active";
+                $user->save();
 
-        $product_json->push([
-            "id"            => $produit->id,
-            "active"        => 0,
-            "product"       => $produit->name,
-            "product_name"  => $produit->name,
-            "unit_cost"     => $row[6],
-            "quantity"      => $row[7],
-            "sub_total"     => $row[7] * $row[6]
-        ]);
+                $note_json = collect([
+                    "note"               => $row[8],
+                    "delivery_note"      => "",
+                    "sell_shipping_cost" => ""
+                ]);
+                $produit = Product::whereName($row[5])->first();
+                $product_json = collect();
 
-        $order = Order::create([
-            'order_status_id'       => 1,
-            'consumer_id'           => $user->id,
-            'contact_id'            => $this->contact_id,
-            'product_id'            => $produit->id,
-            'note_json'             => $note_json,
-            'quantity'              => $row[7],
-            'upsell_json'           => $product_json,
-            'total'                 =>  $row[7] * $row[6],
-            'subTotal'              =>  $row[7] * $row[6],
-            'shipping_adresse'      => $row[3].", ". $row[4],
-            'city_id'               => $this->id,
+                $product_json->push([
+                    "id"            => $produit->id,
+                    "active"        => 0,
+                    "product"       => $produit->name,
+                    "product_name"  => $produit->name,
+                    "unit_cost"     => $row[6],
+                    "quantity"      => $row[7],
+                    "sub_total"     => $row[7] * $row[6]
+                ]);
 
-        ]);
-        $order->created_at = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[0])->format('Y-m-d');
-        $order->save(['timestamps' => false]);
+                $order = Order::create([
+                    'order_status_id'       => 1,
+                    'consumer_id'           => $user->id,
+                    'contact_id'            => $this->contact_id,
+                    'product_id'            => $produit->id,
+                    'note_json'             => $note_json,
+                    'quantity'              => $row[7],
+                    'upsell_json'           => $product_json,
+                    'total'                 =>  $row[7] * $row[6],
+                    'subTotal'              =>  $row[7] * $row[6],
+                    'shipping_adresse'      => $row[3] . ", " . $row[4],
+                    'city_id'               => $this->id,
+
+                ]);
+                $order->created_at = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[0])->format('Y-m-d');
+                $order->save(['timestamps' => false]);
+            }
+        }
     }
-    }
-}
 }

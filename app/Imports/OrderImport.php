@@ -93,7 +93,8 @@ class OrderImport implements WithStartRow, ToCollection, WithCustomCsvSettings
                     'city_id'               => $this->id,
 
                 ]);
-                $order->created_at = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[0])->format('Y-m-d');
+                $order->created_at = now();
+                // $order->created_at = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[0])->format('Y-m-d');
                 $order->save(['timestamps' => false]);
             }
         }

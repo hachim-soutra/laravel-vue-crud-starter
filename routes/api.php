@@ -155,3 +155,4 @@ Route::namespace('App\\Http\\Controllers\\API\V1')->middleware(['cors', 'auth:ap
 });
 
 include('Api/gestion.php');
+include('Api/contact.php');

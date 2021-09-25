@@ -4,21 +4,28 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Passport\HasApiTokens;
 
-class Contact extends Model
+class Contact extends Authenticatable
 {
-    use HasFactory;
+    use HasFactory, Notifiable, HasApiTokens;
 
     protected $fillable = [
-        'prenom', 'nom', 'phone', 'ville', 'adresse','password','email'
+        'prenom', 'nom', 'phone', 'ville', 'adresse', 'password', 'email'
     ];
 
     protected $appends = ['username'];
 
+
     protected $hidden = [
         'password', 'remember_token',
     ];
-
+    public function getAuthPassword()
+    {
+        return $this->password;
+    }
     public function getUsernameAttribute()
     {
         return $this->nom . " " . $this->prenom;
@@ -33,7 +40,6 @@ class Contact extends Model
     }
     public function products()
     {
-        return Product::whereIn('id',$this->stocks()->pluck('product_id'))->get();
+        return Product::whereIn('id', $this->stocks()->pluck('product_id'))->get();
     }
-
 }

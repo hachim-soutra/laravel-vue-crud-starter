@@ -73,7 +73,7 @@ class LivreurStatusController extends BaseController
     public function update(Request $request, $id)
     {
         $request->validate([
-            'name' => 'required|unique:order_statuses,name,'.$id
+            'name' => 'required|unique:order_statuses,name,' . $id
         ]);
         $status = StatusLivraison::findOrFail($id);
         $status->update($request->all());
@@ -81,5 +81,4 @@ class LivreurStatusController extends BaseController
 
         return $this->sendResponse($status, 'Status Information has been updated');
     }
-
 }

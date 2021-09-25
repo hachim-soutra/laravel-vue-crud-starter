@@ -50,6 +50,10 @@ return [
             'driver' => 'session',
             'provider' => 'gestions',
         ],
+        'contact' => [
+            'driver' => 'session',
+            'provider' => 'contacts',
+        ],
 
 
         'api' => [
@@ -65,6 +69,11 @@ return [
         'gestion-api' => [
             'driver' => 'passport',
             'provider' => 'gestions',
+            'hash' => false,
+        ],
+        'contact-api' => [
+            'driver' => 'passport',
+            'provider' => 'contacts',
             'hash' => false,
         ],
     ],
@@ -98,6 +107,10 @@ return [
         'gestions' => [
             'driver' => 'eloquent',
             'model' => App\Models\Gestion::class,
+        ],
+        'contacts' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Contact::class,
         ],
 
         // 'users' => [
@@ -136,6 +149,12 @@ return [
         ],
         'gestions' => [
             'provider' => 'gestions',
+            'table' => 'password_resets',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+        'contacts' => [
+            'provider' => 'contacts',
             'table' => 'password_resets',
             'expire' => 60,
             'throttle' => 60,

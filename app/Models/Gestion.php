@@ -13,7 +13,7 @@ class Gestion extends Authenticatable
     use HasFactory, Notifiable, HasApiTokens;
 
     protected $fillable = [
-        'prenom', 'nom', 'phone', 'ville', 'adresse','password','email','city_id'
+        'prenom', 'nom', 'phone', 'ville', 'adresse', 'password', 'email', 'city_id'
     ];
 
     protected $appends = ['username'];
@@ -29,13 +29,13 @@ class Gestion extends Authenticatable
 
     public function getOrderValideAttribute()
     {
-        return $this->orders->where('order_status_id',1)->first();
+        return $this->orders->where('order_status_id', 1)->first();
     }
 
     public function getOrderHistoriqueAttribute()
     {
         // dd($this->orders->where('order_status_id',1));
-        return $this->orders()->where('dateConfirmation','>',now()->subDays(3)->toDateTimeString())->get();
+        return $this->orders()->where('dateConfirmation', '>', now()->subDays(3)->toDateTimeString())->get();
     }
 
     public function orders()
@@ -45,6 +45,6 @@ class Gestion extends Authenticatable
 
     public function country()
     {
-        return $this->belongsTo(City::class,'city_id');
+        return $this->belongsTo(City::class, 'city_id');
     }
 }

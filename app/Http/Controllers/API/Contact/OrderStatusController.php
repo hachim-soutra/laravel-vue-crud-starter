@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\API\Contact;
 
+use App\Http\Controllers\API\Gestion\BaseController;
+use App\Models\OrderStatus;
 use Illuminate\Http\Request;
 use App\Http\Resources\StatusCollection;
 use App\Http\Resources\StatusResource;
-use App\Models\StatusLivraison;
 
-class LivreurStatusController extends BaseController
+class OrderStatusController extends BaseController
 {
     /**
      * Display a listing of the resource.
@@ -16,7 +17,7 @@ class LivreurStatusController extends BaseController
      */
     public function index()
     {
-        $countries = new StatusCollection(StatusLivraison::latest()->get());
+        $countries = new StatusCollection(OrderStatus::latest()->get());
 
         return $this->sendResponse($countries, 'Status list');
     }
@@ -42,7 +43,7 @@ class LivreurStatusController extends BaseController
         $request->validate([
             'name' => 'required|unique:order_statuses'
         ]);
-        $user = StatusLivraison::create([
+        $user = OrderStatus::create([
             'name' => $request['name'],
         ]);
         return $this->sendResponse($user, 'Status Created Successfully');
@@ -51,12 +52,12 @@ class LivreurStatusController extends BaseController
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\LivreurStatus  $LivreurStatus
+     * @param  \App\Models\OrderStatus  $orderStatus
      * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
-        $country = new StatusResource(StatusLivraison::findOrFail($id));
+        $country = new StatusResource(OrderStatus::findOrFail($id));
 
         return $this->sendResponse($country, 'Status Details');
     }
@@ -67,19 +68,18 @@ class LivreurStatusController extends BaseController
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\LivreurStatus  $LivreurStatus
+     * @param  \App\Models\OrderStatus  $orderStatus
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
         $request->validate([
-            'name' => 'required|unique:order_statuses,name,'.$id
+            'name' => 'required|unique:order_statuses,name,' . $id
         ]);
-        $status = StatusLivraison::findOrFail($id);
+        $status = OrderStatus::findOrFail($id);
         $status->update($request->all());
 
 
         return $this->sendResponse($status, 'Status Information has been updated');
     }
-
 }

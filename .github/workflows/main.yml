@@ -11,5 +11,5 @@ jobs:
       with:
         username: woatdqdp
         host: 162.0.232.119
-        password: ${{ secrets.SSH_PASSWORD }}
+        password: QSPfjLGlD437
         script: 'cd /application && ./server_deploy.sh'

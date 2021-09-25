@@ -55,6 +55,10 @@ class OrderController extends BaseController
         if ($request->order_status_id) {
             $orders = $orders->where('order_status_id', $request->order_status_id);
         }
+
+        if ($request->status_livraison_id) {
+            $orders = $orders->where('status_livraison_id', $request->status_livraison_id);
+        }
         return $this->sendResponse(new OrderCollection($orders), 'order list');
     }
     public function getDelivryOrder($shipping_id)

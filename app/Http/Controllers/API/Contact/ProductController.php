@@ -8,6 +8,7 @@ use App\Http\Resources\ProductResource;
 use App\Http\Resources\StockCollection;
 use App\Models\Contact;
 use App\Models\Product;
+use App\Models\Stock;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
@@ -73,9 +74,15 @@ class ProductController extends BaseController
             'description' => $request->get('description'),
             'price' => $request->get('price'),
             'sell' => $request->get('sell'),
-            'user_id' => auth()->user()->id,
+            'user_id' => null,
             'offre_json' => $offre_json,
             'quantity' => $request->get('quantity'),
+        ]);
+
+        Stock::create([
+            'contact_id' => auth()->user()->id,
+            'quantity'   => $request->get('quantity'),
+            'product_id' => $this->product->id,
         ]);
 
         return $this->sendResponse($product, 'Product Created Successfully');

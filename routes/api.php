@@ -114,7 +114,7 @@ Route::namespace('App\\Http\\Controllers\\API\V1')->middleware(['cors', 'auth:ap
     Route::get('order-reportie', 'OrderController@getOrderReportie');
     Route::post('order/import', 'OrderController@import');
     Route::put('order/status/{id}', 'OrderController@updateStatus');
-    Route::put('order-relancer/{id}', 'OrderController@relancerOrder');
+    Route::put('order-relancer', 'OrderController@relancerOrder');
     Route::put('order/status-livreur/{id}', 'OrderController@updateStatusLivreur');
     Route::get('order/status/{status}/{city:id}', 'OrderController@index');
     Route::get('delivery/list/{city:id}', 'ShippingController@index');

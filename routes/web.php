@@ -27,7 +27,6 @@ Route::get('/', function () {
 Route::get('/seed', function () {
 
     $permissions = [
-        'Super admin',
         'admin',
         'manager',
         'suivi',

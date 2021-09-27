@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 use App\Imports\OrderImport;
 use App\Models\City;
+use App\Models\Historique;
 use App\Models\Product;
 use App\Models\Shipping;
 use Maatwebsite\Excel\Facades\Excel;
@@ -57,8 +58,16 @@ class OrderController extends BaseController
             $orders = $orders->where('city_id', $request->city_id);
         }
 
+        if ($request->produit_id) {
+            $orders = $orders->where('product_id', $request->produit_id);
+        }
+
         if ($request->order_status_id) {
             $orders = $orders->where('order_status_id', $request->order_status_id);
+        }
+
+        if ($request->status_livraison_id) {
+            $orders = $orders->where('status_livraison_id', $request->status_livraison_id);
         }
         return $this->sendResponse(new OrderCollection($orders), 'order list');
     }
@@ -69,7 +78,7 @@ class OrderController extends BaseController
     }
     public function getOrderReportie()
     {
-        $orders = $this->order->where('status_livraison_id', 3)->get();
+        $orders = $this->order->where('order_status_id', 9)->get();
         return $this->sendResponse(new OrderCollection($orders), 'order list');
     }
     public function getDelivryOrderExpide($shipping_id, Request $request)
@@ -84,6 +93,7 @@ class OrderController extends BaseController
                 $orders = $orders->whereBetween('created_at', [$request->dateStart, $request->dateEnd]);
             }
         }
+
         if ($request->contact_id) {
             $orders = $orders->where('contact_id', $request->contact_id);
         }
@@ -92,9 +102,14 @@ class OrderController extends BaseController
             $orders = $orders->where('city_id', $request->city_id);
         }
 
+        if ($request->produit_id) {
+            $orders = $orders->where('product_id', $request->produit_id);
+        }
+
         if ($request->order_status_id) {
             $orders = $orders->where('order_status_id', $request->order_status_id);
         }
+
         if ($request->status_livraison_id) {
             $orders = $orders->where('status_livraison_id', $request->status_livraison_id);
         }
@@ -118,8 +133,17 @@ class OrderController extends BaseController
 
     public function import(Request $request)
     {
-        Excel::import(new OrderImport($request->country_id, $request->contact_id), $request->file('file'));
-        return $this->sendResponse(array(), 'All good!');
+        try {
+            $import = new OrderImport($request->country_id, $request->contact_id);
+            Excel::import($import, $request->file('file'));
+            $imported_data = $import->getData();
+            return $this->sendResponse(array(), $imported_data['imported'] . ' orders import!');
+        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+            $failures = $e->failures();
+            return response()->json([
+                'message' => $failures
+            ], 500);
+        }
     }
     /**
      * Store a newly created resource in storage.
@@ -129,59 +153,19 @@ class OrderController extends BaseController
      */
     public function store(Request $request)
     {
-
-        $note_json = collect([
-            "note"          => $request->note,
-            "delivery_note" => $request->delivery_note,
-            "sell_shipping_cost" => $request->sell_shipping_cost
-        ]);
-
-        $shipping_json = collect([
-            "shipping_numero" => $request->shipping_numero,
-            "shipping_cost"   => $request->shipping_cost
-        ]);
-
-        $product_json = collect();
-
-        $user = Consumer::firstOrNew([
-            'prenom' =>  request('consumer.prenom'),
-            'nom'    =>  request('consumer.nom')
-        ]);
-        $user->adresse = request('consumer.adresse');
-        $user->ville   = request('consumer.ville');
-        $user->phone   = request('consumer.phone');
-        $user->save();
-
-        foreach ($request->rows as $produit) {
-            $product_json->push([
-                "id"          => $produit['id'],
-                "active"      => $produit['active'] ? 1 : 0,
-                "product"     => $produit['product'],
-                "product_name"  => DB::table('products')->where('id', $produit['product'])->first()->name,
-                "unit_cost"   => $produit['unit_cost'],
-                "quantity"    => $produit['quantity'],
-                "sub_total"   => $produit['sub_total']
-            ]);
-        };
-
         $order = $this->order->create([
-            'quantity'      => $product_json->count(),
-            'order_status_id'        => $request->get('status'),
-            'consumer_id'   => $user->id,
-            'contact_id'   => $request->contact_id,
-            'product_id'    => 1,
-            'upsell_json'   => $product_json,
-            'note_json'     => $note_json,
-            'shipping_id'   => $request->get('shipping_id'),
-            'shipping_json' => $shipping_json,
-            'total'         => $request->get('total'),
-            'subTotal'      => $request->get('subTotal'),
-            'shipping_adresse' => $request->shipping_adresse
+            'quantity'          => $request->quantity,
+            'order_status_id'   => $request->order_status_id,
+            'contact_id'        => $request->contact_id,
+            'shipping_id'       => $request->get('shipping_id'),
+            'total'             => $request->get('total'),
+            'subTotal'          => $request->get('subTotal'),
+            'shipping_adresse'  => $request->shipping_adresse,
+            'note'              => $request->note,
+            'delivery_note'     => $request->delivery_note,
+
         ]);
 
-        \QrCode::size(500)
-            ->format('png')
-            ->generate('codingdriver.com', public_path('images/qrcode.png'));
 
         $user = auth()->user();
 
@@ -212,67 +196,42 @@ class OrderController extends BaseController
     public function update(Request $request, $id)
     {
         $order = $this->order->findOrFail($id);
-        // $order->update($request->all());
-        $note_json = collect([
-            "note"          => $request->note,
-            "delivery_note" => $request->delivery_note,
-            "sell_shipping_cost" => $request->sell_shipping_cost
-        ]);
-
-        $shipping_json = collect([
-            "shipping_numero" => $request->shipping_numero,
-            "shipping_cost"   => $request->shipping_cost
-        ]);
-
-        $product_json = collect();
-        foreach ($request->rows as $produit) {
-            $product_json->push([
-                "id"          => $produit['id'],
-                "active"      => $produit['active'] ? 1 : 0,
-                "product"     => $produit['product'],
-                "product_name"  => DB::table('products')->where('id', $produit['product'])->first()->name,
-                "unit_cost"   => $produit['unit_cost'],
-                "quantity"    => $produit['quantity'],
-                "sub_total"   => $produit['sub_total']
-            ]);
-        };
-
-        $user = Consumer::firstOrNew([
-            'prenom' =>  request('consumer.prenom'),
-            'nom'    =>  request('consumer.nom')
-        ]);
-        $user->adresse = request('consumer.adresse');
-        $user->ville   = request('consumer.ville');
-        $user->phone   = request('consumer.phone');
-        $user->save();
         $order->update([
-            'quantity'      => $product_json->count(),
-            'order_status_id'        => $request->order_status,
-            'package'       => $request->package_status,
-            'contact_id'     => $request->contact_id,
-            'consumer_id'   => $request->consumer_id,
-            'product_id'    => 1,
-            'datetime'      => $request->datetime,
-            'upsell_json'   => $product_json,
-            'note_json'     => $note_json,
-            'shipping_id'   => $request->get('shipping_id'),
-            'shipping_json' => $shipping_json,
-            'total'         => $request->get('total'),
-            'subTotal'      => $request->get('subTotal'),
-            'shipping_adresse' => $request->shipping_adresse
+            'quantity'            => $request->quantity,
+            'tarif'               => $request->tarif,
+            'consumer_phone'      => $request->consumer_phone,
+            'consumer_name'       => $request->consumer_name,
+            'consumer_ville'      => $request->consumer_ville,
+            'order_status_id'     => $request->order_status_id,
+            'status_livraison_id' => $request->status_livraison_id,
+            'product_id'          => $request->product_id,
+            'shipping_id'         => $request->shipping_id,
+            'date_reporting'      => $request->order_status_id === 9 ? $request->date_reporting : null,
+            'note'                => $request->note,
+            'delivery_note'       => $request->delivery_note,
+            'shipping_id'         => $request->get('shipping_id'),
+            'total'               => $request->quantity * $order->product->price,
+            'subTotal'            => $request->quantity * $order->product->price,
+            'shipping_adresse'    => $request->shipping_adresse
         ]);
-        return $this->sendResponse($order, 'order Information has been updated');
+        Historique::create([
+            'order_id' => $order->id,
+            'text' => 'Agent ' . auth()->user()->id . ' mise a jour order to' . $order->status->name
+        ]);
+        return $this->sendResponse($order, 'Les informations de commande ont été mises à jour');
     }
-    public function relancerOrder(Request $request, $id)
+    public function relancerOrder(Request $request)
     {
-        $order = $this->order->findOrFail($id);
-        $order->update([
-            'order_status_id'     => 1,
-            'status_livraison_id' => null,
-            'gestion_id'          => null,
-            'shipping_id'         => null,
-        ]);
-        return $this->sendResponse($order, 'order Information has been updated');
+        foreach ($request->orders as $order) {
+            $order = Order::find($order["id"]);
+            $order->update([
+                'order_status_id'     => 1,
+                'status_livraison_id' => null,
+                'gestion_id'          => null,
+                'shipping_id'         => null,
+            ]);
+        }
+        return $this->sendResponse($order, 'Les informations de commande ont été mises à jour');
     }
     public function updateStatusLivreur(Request $request, $id)
     {
@@ -285,7 +244,7 @@ class OrderController extends BaseController
         $order->order_status_id     = $request->order_status_id;
         $order->user_id = auth()->user()->id;
         $order->save();
-        return $this->sendResponse($order, 'order Information has been updated');
+        return $this->sendResponse($order, 'Les informations de commande ont été mises à jour');
     }
 
     /**

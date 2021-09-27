@@ -14,7 +14,7 @@ class AddCityIdToOrdersTable extends Migration
     public function up()
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->integer('city_id');
+            $table->json('city_id');
         });
     }
 

@@ -19,6 +19,7 @@ class OrderImport implements WithStartRow, ToCollection, WithCustomCsvSettings
 {
     protected $id;
     protected $contact_id;
+    private $imported = 0;
 
     function __construct($id, $contact_id)
     {
@@ -36,6 +37,12 @@ class OrderImport implements WithStartRow, ToCollection, WithCustomCsvSettings
             'delimiter' => ";"
         ];
     }
+    public function getDATA(): array
+    {
+        return array(
+            'imported'     => $this->imported
+        );
+    }
     /**
      * @param array $row
      *
@@ -45,57 +52,32 @@ class OrderImport implements WithStartRow, ToCollection, WithCustomCsvSettings
     {
         foreach ($rows as $row) {
 
-            if (isset($row[1]) && isset($row[1])) {
+            if (isset($row[1]) && isset($row[2])) {
 
-                $name   = explode(" ", $row[1], 2);
-                $prenom = $name[0];
-                $nom    = isset($name[1]) ? $name[1] : '';
 
-                $user = Consumer::firstOrNew([
-                    'prenom' =>  $prenom,
-                    'nom'    =>  $nom
-                ]);
-                $user->adresse = $row[3];
-                $user->ville   = $row[4];
-                $user->phone   = $row[2];
-                $user->status  = "active";
-                $user->save();
-
-                $note_json = collect([
-                    "note"               => $row[8],
-                    "delivery_note"      => "",
-                    "sell_shipping_cost" => ""
-                ]);
                 $produit = Product::whereName($row[5])->first();
-                $product_json = collect();
-
-                $product_json->push([
-                    "id"            => $produit->id,
-                    "active"        => 0,
-                    "product"       => $produit->name,
-                    "product_name"  => $produit->name,
-                    "unit_cost"     => $row[6],
-                    "quantity"      => $row[7],
-                    "sub_total"     => $row[7] * $row[6]
-                ]);
-
-                $order = Order::create([
-                    'order_status_id'       => 1,
-                    'consumer_id'           => $user->id,
-                    'contact_id'            => $this->contact_id,
-                    'product_id'            => $produit->id,
-                    'note_json'             => $note_json,
-                    'quantity'              => $row[7],
-                    'upsell_json'           => $product_json,
-                    'total'                 =>  $row[7] * $row[6],
-                    'subTotal'              =>  $row[7] * $row[6],
-                    'shipping_adresse'      => $row[3] . ", " . $row[4],
-                    'city_id'               => $this->id,
-
-                ]);
-                $order->created_at = now();
-                // $order->created_at = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[0])->format('Y-m-d');
-                $order->save(['timestamps' => false]);
+                if ($produit) {
+                    $order = Order::create([
+                        'order_status_id'       => 1,
+                        'consumer_name'         => $row[1],
+                        'consumer_phone'        => $row[2],
+                        'shipping_adresse'      => $row[3],
+                        'consumer_ville'        => $row[4],
+                        'product_id'            => $produit->id,
+                        'contact_id'            => $this->contact_id,
+                        "note"                  => $row[8],
+                        "delivery_note"         => "",
+                        'quantity'              => $row[7],
+                        'total'                 => $row[7] * $row[6],
+                        'subTotal'              => $row[7] * $row[6],
+                        'city_id'               => $this->id,
+                        'user_id'               => auth()->user()->id,
+                    ]);
+                    $order->created_at = now();
+                    // $order->created_at = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[0])->format('Y-m-d');
+                    $order->save(['timestamps' => false]);
+                    $this->imported++;
+                }
             }
         }
     }

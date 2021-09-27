@@ -20,6 +20,9 @@ class CreateGestionsTable extends Migration
             $table->string('phone');
             $table->string('ville');
             $table->string('adresse');
+            $table->string('email')->unique();
+            $table->string('password');
+            $table->integer('city_id');
             $table->timestamps();
         });
     }

@@ -12,24 +12,21 @@ class Order extends Model
     use HasFactory, Notifiable;
 
     protected $fillable = [
-        'order_status_id', 'tarif', 'package', 'source_id', 'consumer_id', 'product_id', 'upsell_json', 'note_json', 'shipping_id', 'shipping_json', 'quantity', 'total', 'subTotal', 'dateConfirmation', 'city', 'city_id', 'user_id', 'gestion_id','shipping_adresse','contact_id','status_livraison_id'
+        'order_status_id', 'tarif', 'consumer_phone', 'consumer_name', 'consumer_ville', 'product_id', 'note', 'shipping_id',
+        'delivery_note', 'quantity', 'total', 'subTotal', 'dateConfirmation',
+        'city_id', 'user_id', 'gestion_id', 'shipping_adresse', 'contact_id', 'status_livraison_id',
+        'date_reporting', 'transaction_id'
     ];
 
-    protected $appends = array('consumer_name', 'product_name');
-
-    protected $dates = array('dateConfirmation');
+    protected $dates = array('dateConfirmation', 'date_reporting');
 
     protected $casts = [
         // 'dateConfirmation' => 'datetime:Y-m-d H:m:s',
     ];
 
-    public function source()
+    public function transactions()
     {
-        return $this->belongsTo(Source::class);
-    }
-    public function consumer()
-    {
-        return $this->belongsTo(Consumer::class);
+        return $this->hasMany(Transaction::class);
     }
     public function gestion()
     {
@@ -45,43 +42,26 @@ class Order extends Model
     }
     public function status()
     {
-        return $this->belongsTo(OrderStatus::class,'order_status_id');
+        return $this->belongsTo(OrderStatus::class, 'order_status_id');
     }
     public function statusLivraison()
     {
-        return $this->belongsTo(StatusLivraison::class,'status_livraison_id');
+        return $this->belongsTo(StatusLivraison::class, 'status_livraison_id');
     }
-    public function getNoteAttribute()
-    {
-        return json_decode($this->note_json, true);
-    }
+
     public function country()
     {
-        return $this->belongsTo(City::class,'city_id');
+        return $this->belongsTo(City::class, 'city_id');
     }
     public function product()
     {
         return $this->belongsTo(Product::class);
     }
 
-    public function getConsumerNameAttribute()
-    {
-        return $this->consumer->prenom . ' ' . $this->consumer->nom;
-    }
+
     public function getProductNameAttribute()
     {
-        $product_names = json_decode($this->upsell_json, true);
-        $product_name = null;
-        if ($product_names) {
-            foreach ($product_names as $key => $value) {
-                $product_name .= $value['quantity'] . " * " . $value['product_name'];
-                if ($key !== array_key_last($product_names))
-                    $product_name .= " ,";
-            }
-
-            return $product_name;
-        }
-        return "";
+        return $this->product->name;
     }
     public static function allOrder()
     {

@@ -13,7 +13,7 @@ class Contact extends Authenticatable
     use HasFactory, Notifiable, HasApiTokens;
 
     protected $fillable = [
-        'prenom', 'nom', 'phone', 'ville', 'adresse', 'password', 'email'
+        'prenom', 'nom', 'phone', 'ville', 'adresse', 'password', 'email', 'transaction_id'
     ];
 
     protected $appends = ['username'];
@@ -41,5 +41,10 @@ class Contact extends Authenticatable
     public function products()
     {
         return Product::whereIn('id', $this->stocks()->pluck('product_id'))->get();
+    }
+
+    public function ordersNotPaye()
+    {
+        return $this->orders->whereNull('transaction_id');
     }
 }

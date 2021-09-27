@@ -46,9 +46,9 @@ class ProductController extends BaseController
         $response['stocks'] =  new StockCollection(auth()->user()->stocks()->get());
         return $this->sendResponse($response, 'Product list');
     }
-    public function list(Contact $contact)
+    public function list()
     {
-        $products = $contact->products();
+        $products = auth()->user()->products();
 
         return $this->sendResponse($products, 'Product list');
     }
@@ -61,28 +61,20 @@ class ProductController extends BaseController
      */
     public function store(ProductRequest $request)
     {
-        $offre_json = collect();
-        foreach ($request->offre as $key => $produit) {
-            $offre_json->push([
-                "id"          => $key,
-                "unit_cost"   => $produit['unit_cost'],
-                "quantity"    => $produit['quantity'],
-            ]);
-        };
+
         $product = $this->product->create([
             'name' => $request->get('name'),
             'description' => $request->get('description'),
             'price' => $request->get('price'),
             'sell' => $request->get('sell'),
-            'user_id' => null,
-            'offre_json' => $offre_json,
+            'user_id' => auth()->user()->id,
             'quantity' => $request->get('quantity'),
         ]);
 
         Stock::create([
             'contact_id' => auth()->user()->id,
             'quantity'   => $request->get('quantity'),
-            'product_id' => $this->product->id,
+            'product_id' => $product->id,
         ]);
 
         return $this->sendResponse($product, 'Product Created Successfully');

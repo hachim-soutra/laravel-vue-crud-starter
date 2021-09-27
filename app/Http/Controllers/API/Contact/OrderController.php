@@ -84,14 +84,18 @@ class OrderController extends BaseController
             }
         }
 
-
         if ($request->city_id) {
             $orders = $orders->where('city_id', $request->city_id);
+        }
+
+        if ($request->produit_id) {
+            $orders = $orders->where('product_id', $request->produit_id);
         }
 
         if ($request->order_status_id) {
             $orders = $orders->where('order_status_id', $request->order_status_id);
         }
+
         if ($request->status_livraison_id) {
             $orders = $orders->where('status_livraison_id', $request->status_livraison_id);
         }
@@ -115,8 +119,17 @@ class OrderController extends BaseController
 
     public function import(Request $request)
     {
-        Excel::import(new OrderImport($request->country_id, $request->contact_id), $request->file('file'));
-        return $this->sendResponse(array(), 'All good!');
+        try {
+            $import = new OrderImport($request->country_id, $request->contact_id);
+            Excel::import($import, $request->file('file'));
+            $imported_data = $import->getData();
+            return $this->sendResponse(array(), $imported_data['imported'] . ' orders import!');
+        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+            $failures = $e->failures();
+            return response()->json([
+                'message' => $failures
+            ], 500);
+        }
     }
     /**
      * Store a newly created resource in storage.

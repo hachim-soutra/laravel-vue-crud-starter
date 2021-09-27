@@ -35,7 +35,7 @@ class Gestion extends Authenticatable
     public function getOrderHistoriqueAttribute()
     {
         // dd($this->orders->where('order_status_id',1));
-        return $this->orders()->where('dateConfirmation', '>', now()->subDays(3)->toDateTimeString())->get();
+        return $this->orders()->where('order_status_id', '!=', 1)->where('dateConfirmation', '>', now()->subDays(3)->toDateTimeString())->get();
     }
 
     public function orders()

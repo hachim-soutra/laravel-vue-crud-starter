@@ -9,6 +9,7 @@ Route::namespace('App\Http\Controllers\API\Contact')->middleware('cors')->prefix
 
 Route::namespace('App\\Http\\Controllers\\API\Contact')->middleware(['cors', 'auth:contact-api'])->prefix('contact-espace')->group(function () {
     Route::get('order/list', 'OrderController@index');
+    Route::get('product/list', 'ProductController@list');
     Route::get('order/historique', 'OrderController@historique');
     Route::get('order/refresh', 'OrderController@refresh');
     Route::get('order-reportie', 'OrderController@getOrderReportie');
@@ -27,5 +28,6 @@ Route::namespace('App\\Http\\Controllers\\API\Contact')->middleware(['cors', 'au
         'product'       => 'ProductController',
         'livreurStatus' => 'LivreurStatusController',
         'contact'       => 'ContactController',
+        'transaction'   => 'TransactionController',
     ]);
 });

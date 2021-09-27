@@ -65,21 +65,13 @@ class ProductController extends BaseController
      */
     public function store(ProductRequest $request)
     {
-        $offre_json = collect();
-        foreach ($request->offre as $key => $produit) {
-            $offre_json->push([
-                "id"          => $key,
-                "unit_cost"   => $produit['unit_cost'],
-                "quantity"    => $produit['quantity'],
-            ]);
-        };
+
         $product = $this->product->create([
             'name' => $request->get('name'),
             'description' => $request->get('description'),
             'price' => $request->get('price'),
             'sell' => $request->get('sell'),
             'user_id' => auth()->user()->id,
-            'offre_json' => $offre_json,
             'quantity' => $request->get('quantity'),
         ]);
 

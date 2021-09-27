@@ -41,10 +41,10 @@ class OrderController extends BaseController
     }
     public function refresh()
     {
-        if(auth()->user()->orderValide){
+        if (auth()->user()->orderValide) {
             return $this->sendResponse(new OrderResource(auth()->user()->orderValide), 'order list');
         }
-        $order = $this->order->where('order_status_id',1)->whereNull('gestion_id')->first();
+        $order = $this->order->where('order_status_id', 1)->whereNull('gestion_id')->first();
         $order->gestion_id =  auth()->user()->id;
         $order->save();
 
@@ -74,73 +74,9 @@ class OrderController extends BaseController
     {
         Excel::import(new OrderImport($request->country_id, $request->contact_id), $request->file('file'));
         return $this->sendResponse(array(), 'All good!');
-
     }
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        $note_json = collect([
-            "note"          => $request->note,
-            "delivery_note" => $request->delivery_note,
-            "sell_shipping_cost" => $request->sell_shipping_cost
-        ]);
-
-        $shipping_json = collect([
-            "shipping_numero" => $request->shipping_numero,
-            "shipping_cost"   => $request->shipping_cost
-        ]);
-
-        $product_json = collect();
-
-        $user = Consumer::firstOrNew([
-            'prenom' =>  request('consumer.prenom'),
-            'nom'    =>  request('consumer.nom') ? request('consumer.nom') : ''
-        ]);
-        $user->adresse = request('consumer.adresse');
-        $user->ville   = request('consumer.ville');
-        $user->phone   = request('consumer.phone');
-        $user->save();
-
-        foreach ($request->rows as $produit) {
-            $product_json->push([
-                "id"          => $produit['id'],
-                "active"      => $produit['active'] ? 1 : 0,
-                "product"     => $produit['product'],
-                "product_name"  => DB::table('products')->where('id', $produit['product'])->first()->name,
-                "unit_cost"   => $produit['unit_cost'],
-                "quantity"    => $produit['quantity'],
-                "sub_total"   => $produit['sub_total']
-            ]);
-        };
-
-        $order = $this->order->create([
-            'quantity'      => $product_json->count(),
-            'order_status_id'        => $request->get('status'),
-            'consumer_id'   => $user->id,
-            'contact_id'   => $request->contact_id,
-            'product_id'    => 1,
-            'dateConfirmation'    => now(),
-            'upsell_json'   => $product_json,
-            'note_json'     => $note_json,
-            'shipping_id'   => $request->get('shipping_id'),
-            'shipping_json' => $shipping_json,
-            'total'         => $request->get('total'),
-            'subTotal'      => $request->get('subTotal'),
-            'shipping_adresse' => $request->shipping_adresse
-        ]);
 
 
-        $user = auth()->user();
-
-        //FacadesNotification::send($user, $order);
-        Notification::send($user, new newOrder($order));
-        return $this->sendResponse($order, 'order Created Successfully');
-    }
 
     /**
      * Display the specified resource.
@@ -163,55 +99,25 @@ class OrderController extends BaseController
      */
     public function update(Request $request, $id)
     {
-        $this->validate($request,[
-            'order_status_id'=>'required|different:1',
-         ]);
+        $this->validate($request, [
+            'order_status_id' => 'required|different:1',
+        ]);
         $order = $this->order->findOrFail($id);
-        // $order->update($request->all());
-        $note_json = collect([
-            "note"          => $request->note,
-            "delivery_note" => $request->delivery_note,
-            "sell_shipping_cost" => $request->sell_shipping_cost
-        ]);
-
-        $shipping_json = collect([
-            "shipping_numero" => $request->shipping_numero,
-            "shipping_cost"   => $request->shipping_cost
-        ]);
-
-        $product_json = collect();
-        foreach ($request->rows as $produit) {
-            $product_json->push([
-                "id"          => $produit['id'],
-                "active"      => $produit['active'] ? 1 : 0,
-                "product"     => $produit['product'],
-                "product_name"  => DB::table('products')->where('id', $produit['id'])->first()->name,
-                "unit_cost"   => $produit['unit_cost'],
-                "quantity"    => $produit['quantity'],
-                "sub_total"   => $produit['sub_total']
-            ]);
-        };
-
-        $user = Consumer::firstOrNew([
-            'prenom' =>  request('consumer.prenom'),
-            'nom'    =>  request('consumer.nom') ? request('consumer.nom') : ''
-        ]);
-        $user->adresse = request('consumer.adresse');
-        $user->ville   = request('consumer.ville');
-        $user->phone   = request('consumer.phone');
-        $user->save();
         $order->update([
-            'quantity'              => $product_json->count(),
-            'order_status_id'       => $request->order_status_id,
-            'contact_id'            => $request->contact_id,
-            'consumer_id'           => $request->consumer_id,
-            'upsell_json'           => $product_json,
-            'note_json'             => $note_json,
-            'dateConfirmation'      => now(),
-            'shipping_json'         => $shipping_json,
-            'total'                 => $request->get('total'),
-            'subTotal'              => $request->get('subTotal'),
-            'shipping_adresse'      => $request->shipping_adresse
+            'quantity'            => $request->quantity,
+            'consumer_phone'      => $request->consumer_phone,
+            'consumer_name'       => $request->consumer_name,
+            'consumer_ville'      => $request->consumer_ville,
+            'order_status_id'     => $request->order_status_id,
+            'gestion_id'          => auth()->user()->id,
+            'date_reporting'      => $request->order_status_id === 9 ? $request->date_reporting : null,
+            'note'                => $request->note,
+            'dateConfirmation'    => now(),
+            'delivery_note'       => $request->delivery_note,
+            'total'               => $request->quantity * $order->product->price,
+            'subTotal'            => $request->quantity * $order->product->price,
+            'shipping_adresse'    => $request->shipping_adresse
+
         ]);
         return $this->sendResponse($order, 'order Information has been updated');
     }

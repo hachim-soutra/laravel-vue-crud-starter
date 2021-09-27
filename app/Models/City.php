@@ -26,10 +26,6 @@ class City extends Model
     {
         return $this->hasMany(User::class);
     }
-    public function consumers()
-    {
-        return $this->hasMany(Consumer::class);
-    }
     public function delivers()
     {
         return $this->hasMany(Shipping::class);

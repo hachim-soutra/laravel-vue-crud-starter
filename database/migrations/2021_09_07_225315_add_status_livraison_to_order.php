@@ -15,8 +15,10 @@ class AddStatusLivraisonToOrder extends Migration
     {
         Schema::table('orders', function (Blueprint $table) {
             $table->integer('status_livraison_id')->nullable();
+            $table->integer('transaction_id')->nullable();
         });
     }
+
 
     /**
      * Reverse the migrations.

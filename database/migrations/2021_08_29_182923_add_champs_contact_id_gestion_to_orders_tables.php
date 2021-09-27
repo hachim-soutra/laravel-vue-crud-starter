@@ -15,8 +15,10 @@ class AddChampsContactIdGestionToOrdersTables extends Migration
     {
         Schema::table('orders', function (Blueprint $table) {
             $table->integer('contact_id')->nullable();
-            $table->string('shipping_adresse')->nullable();
             $table->integer('gestion_id')->nullable();
+            $table->integer('user_id')->nullable();
+            $table->dateTime('date_reporting')->nullable();
+            $table->dateTime('dateConfirmation')->nullable();
         });
     }
 

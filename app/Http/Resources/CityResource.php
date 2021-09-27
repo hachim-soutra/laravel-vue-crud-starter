@@ -18,8 +18,7 @@ class CityResource extends JsonResource
             'id'            => $this->id,
             'name'          => $this->name,
             'orders'        => $this->orders->count(),
-            'users'        => $this->users->count(),
-            'consumers'     => $this->consumers->count(),
+            'users'         => $this->users->count(),
             'delivers'      => $this->delivers->count(),
             'created_at'    => $this->created_at->format('Y-m-d'),
         ];

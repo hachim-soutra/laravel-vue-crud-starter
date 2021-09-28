@@ -133,6 +133,10 @@ class OrderController extends BaseController
 
     public function import(Request $request)
     {
+        $request->validate([
+            'country_id' => 'required|exists:cities,id',
+            'contact_id' => 'required|exists:contacts,id',
+        ]);
         try {
             $import = new OrderImport($request->country_id, $request->contact_id);
             Excel::import($import, $request->file('file'));

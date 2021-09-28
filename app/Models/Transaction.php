@@ -15,6 +15,11 @@ class Transaction extends Model
 
     protected $dates = array('date_payment', 'date_recipient');
 
+    protected $casts = [
+        'date_recipient' => 'datetime:Y-m-d H:m:s',
+        'date_payment' => 'datetime:Y-m-d H:m:s',
+    ];
+
     public function contact()
     {
         return $this->belongsTo(Contact::class);

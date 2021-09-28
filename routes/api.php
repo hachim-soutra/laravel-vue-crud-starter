@@ -138,6 +138,7 @@ Route::namespace('App\\Http\\Controllers\\API\V1')->middleware(['cors', 'auth:ap
         'delivery'      => 'ShippingController',
         'company'       => 'ShippingCompanyController',
         'order'         => 'OrderController',
+        'transaction'   => 'TransactionController',
         'country'       => 'CityController',
     ]);
     // delivery

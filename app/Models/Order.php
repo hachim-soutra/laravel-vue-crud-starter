@@ -24,6 +24,10 @@ class Order extends Model
         // 'dateConfirmation' => 'datetime:Y-m-d H:m:s',
     ];
 
+    public function historiques()
+    {
+        return $this->hasMany(Historique::class);
+    }
     public function transactions()
     {
         return $this->hasMany(Transaction::class);
@@ -35,6 +39,10 @@ class Order extends Model
     public function contact()
     {
         return $this->belongsTo(Contact::class);
+    }
+    public function transaction()
+    {
+        return $this->belongsTo(Transaction::class);
     }
     public function user()
     {
@@ -58,6 +66,11 @@ class Order extends Model
         return $this->belongsTo(Product::class);
     }
 
+
+    public function getIsCanRammasageAttribute()
+    {
+        return $this->product->stocks->where('contact_id', $this->contact_id)->sum('quantity') >= $this->quantity;
+    }
 
     public function getProductNameAttribute()
     {

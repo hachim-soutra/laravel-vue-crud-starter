@@ -6,7 +6,7 @@ Route::namespace('App\Http\Controllers\API\Gestion')->middleware('cors')->prefix
     Route::post('login', 'AuthController@login');
 });
 
-Route::namespace('App\\Http\\Controllers\\API\Gestion')->middleware(['cors','auth:gestion-api'])->prefix('gestion-espace')->group(function () {
+Route::namespace('App\\Http\\Controllers\\API\Gestion')->middleware(['cors','auth:gestion-api','LastActivityUser'])->prefix('gestion-espace')->group(function () {
     Route::get('order/list', 'OrderController@index');
     Route::get('order/historique', 'OrderController@historique');
     Route::get('order/refresh', 'OrderController@refresh');
@@ -19,5 +19,6 @@ Route::namespace('App\\Http\\Controllers\\API\Gestion')->middleware(['cors','aut
         'orderStatus'   => 'OrderStatusController',
         'order'         => 'OrderController',
         'country'       => 'CityController',
+        'product'       => 'ProductController',
     ]);
 });

@@ -45,6 +45,6 @@ class Contact extends Authenticatable
 
     public function ordersNotPaye()
     {
-        return $this->orders->whereNull('transaction_id');
+        return $this->orders->whereNull('transaction_id')->where('status_livraison_id', 2);
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Imports;
 
 use App\Models\Consumer;
+use App\Models\Historique;
 use App\Models\Order;
 use App\Models\OrderStatus;
 use App\Models\Product;
@@ -76,6 +77,10 @@ class OrderImport implements WithStartRow, ToCollection, WithCustomCsvSettings
                     $order->created_at = now();
                     // $order->created_at = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[0])->format('Y-m-d');
                     $order->save(['timestamps' => false]);
+                    Historique::create([
+                        'order_id' => $order->id,
+                        'text' => auth()->guard('contact')->check() ? 'partenaire ' . auth()->user()->id . ' import order' : 'Agent ' . auth()->user()->id . ' import order'
+                    ]);
                     $this->imported++;
                 }
             }

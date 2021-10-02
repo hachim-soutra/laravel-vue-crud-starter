@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 use App\Imports\OrderImport;
+use App\Models\Historique;
 use App\Models\Product;
 use App\Models\Shipping;
 use Maatwebsite\Excel\Facades\Excel;
@@ -97,11 +98,47 @@ class OrderController extends BaseController
      * @param  \App\Models\Order  $order
      * @return \Illuminate\Http\Response
      */
+    public function store(Request $request)
+    {
+        if($request->order_status_id == 1){
+            return response()->json(
+                [
+                    'message' => 'change order status'
+                ], 500);
+        }
+
+        $total = $request->quantity * Product::findOrFail($request->product_id)->sell;
+
+        $this->order->create([
+            'quantity'            => $request->quantity,
+            'consumer_phone'      => $request->consumer_phone,
+            'consumer_name'       => $request->consumer_name,
+            'consumer_ville'      => $request->consumer_ville,
+            'order_status_id'     => $request->order_status_id,
+            'gestion_id'          => auth()->user()->id,
+            'product_id'          => $request->product_id,
+            'date_reporting'      => $request->order_status_id === 9 ? $request->date_reporting : null,
+            'note'                => $request->note,
+            'dateConfirmation'    => now(),
+            'delivery_note'       => $request->delivery_note,
+            'total'               => $total,
+            'subTotal'            => $total,
+            'shipping_adresse'    => $request->shipping_adresse
+        ]);
+        Historique::create([
+            'order_id' => $this->order->id,
+            'text' => 'Agent Confirmation ' . auth()->user()->id . ' ajouter order avec ' . $this->order->status->name
+        ]);
+        return $this->sendResponse($this->order, 'order Information has been updated');
+    }
     public function update(Request $request, $id)
     {
-        $this->validate($request, [
-            'order_status_id' => 'required|different:1',
-        ]);
+        if($request->order_status_id == 1){
+            return response()->json(
+                [
+                    'message' => 'change order status'
+                ], 500);
+        }
         $order = $this->order->findOrFail($id);
         $order->update([
             'quantity'            => $request->quantity,
@@ -119,6 +156,10 @@ class OrderController extends BaseController
             'shipping_adresse'    => $request->shipping_adresse
 
         ]);
+        Historique::create([
+            'order_id' => $order->id,
+            'text' => 'Agent Confirmation ' . auth()->user()->id . ' mise a jour order avec ' . $order->status->name
+        ]);
         return $this->sendResponse($order, 'order Information has been updated');
     }
     public function updateStatus(Request $request, $id)
@@ -131,6 +172,10 @@ class OrderController extends BaseController
             'order_status_id' => $request->order_status_id,
             'user_id'         => auth()->user()->id,
 
+        ]);
+        Historique::create([
+            'order_id' => $order->id,
+            'text' => 'Agent Confirmation ' . auth()->user()->id . ' mise a jour order avec ' . $order->status->name
         ]);
         return $this->sendResponse($order, 'order Information has been updated');
     }

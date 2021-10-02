@@ -23,6 +23,7 @@ class UserResource extends JsonResource
             'role'              => $this->getRoleNames(),
             'permissions'       => $this->getDirectPermissions(),
             'admin'             => $this->admin ? $this->admin->name : '',
+            'isOnline'          => $this->last_activity ? true : false,
             'status'            => $this->status,
             'phone'             => $this->phone,
             'city_id'             => $this->city_id,

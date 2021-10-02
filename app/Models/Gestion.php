@@ -13,7 +13,7 @@ class Gestion extends Authenticatable
     use HasFactory, Notifiable, HasApiTokens;
 
     protected $fillable = [
-        'prenom', 'nom', 'phone', 'ville', 'adresse', 'password', 'email', 'city_id'
+        'prenom', 'nom', 'phone', 'ville', 'adresse', 'password', 'email', 'city_id','last_activity'
     ];
 
     protected $appends = ['username'];

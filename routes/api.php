@@ -86,7 +86,7 @@ Route::namespace('App\Http\Controllers\API\User')->middleware('cors')->prefix('a
     Route::post('login', 'AuthController@login');
 });
 
-Route::namespace('App\\Http\\Controllers\\API\V1')->middleware(['cors', 'auth:api'])->group(function () {
+Route::namespace('App\\Http\\Controllers\\API\V1')->middleware(['cors', 'auth:api','LastActivityUser'])->group(function () {
     Route::get('profile', 'ProfileController@profile');
     Route::get('dashboard', 'ProfileController@dashboard');
     Route::get('dashboard-products', 'ProfileController@getProduct');

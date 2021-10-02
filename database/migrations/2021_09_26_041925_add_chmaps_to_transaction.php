@@ -17,8 +17,8 @@ class AddChmapsToTransaction extends Migration
             $table->double('total');
             $table->integer('quantity');
             $table->integer('contact_id');
-            $table->boolean('date_payment')->nullable();
-            $table->boolean('date_recipient')->nullable();
+            $table->dateTime('date_payment')->nullable();
+            $table->dateTime('date_recipient')->nullable();
         });
     }
 

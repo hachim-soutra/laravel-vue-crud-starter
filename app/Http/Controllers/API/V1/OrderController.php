@@ -16,6 +16,7 @@ use App\Models\City;
 use App\Models\Historique;
 use App\Models\Product;
 use App\Models\Shipping;
+use App\Models\Stock;
 use Maatwebsite\Excel\Facades\Excel;
 
 class OrderController extends BaseController
@@ -121,12 +122,28 @@ class OrderController extends BaseController
             $item = Order::find($order["id"]);
             $item->shipping_id = $shipping->id;
             $item->status_livraison_id = 1;
-            foreach ($order["product_array"] as $produit) {
-                $product = Product::find($produit["id"]);
-                $product->quantity -= $produit["quantity"];
-                $product->save();
+
+            $stockQuantity = $item->product->stocks->where('contact_id', $item->contact_id)->sum('quantity');
+            if($stockQuantity >= $item->quantity) {
+                Stock::create([
+                    'contact_id' => $item->contact_id,
+                    'quantity'   => -$item->quantity,
+                    'product_id' => $item->product_id,
+                ]);
+                $produit = Product::find($item->product_id);
+                $produit->quantity -= $item->quantity;
+                $produit->save();
+                $item->save();
+                Historique::create([
+                    'order_id' => $item->id,
+                    'text' => 'Agent ' . auth()->user()->id . ' ramasser order'
+                ]);
+            }else {
+                return response()->json(
+                    [
+                        'message' => $item->contact->name.' n\'a pas la quantity '.$item->quantity.'dans le produit '.$item->produit->name
+                    ], 500);
             }
-            $item->save();
         }
         return $this->sendResponse($shipping, 'order list');
     }
@@ -167,9 +184,7 @@ class OrderController extends BaseController
             'shipping_adresse'  => $request->shipping_adresse,
             'note'              => $request->note,
             'delivery_note'     => $request->delivery_note,
-
         ]);
-
 
         $user = auth()->user();
 
@@ -234,6 +249,10 @@ class OrderController extends BaseController
                 'gestion_id'          => null,
                 'shipping_id'         => null,
             ]);
+            Historique::create([
+                'order_id' => $order->id,
+                'text' => 'Agent ' . auth()->user()->id . ' relancer order'
+            ]);
         }
         return $this->sendResponse($order, 'Les informations de commande ont été mises à jour');
     }
@@ -248,6 +267,10 @@ class OrderController extends BaseController
         $order->order_status_id     = $request->order_status_id;
         $order->user_id = auth()->user()->id;
         $order->save();
+        Historique::create([
+            'order_id' => $order->id,
+            'text' => 'Agent ' . auth()->user()->id . ' mise a jour order livraison to' . $order->statusLivraison->name
+        ]);
         return $this->sendResponse($order, 'Les informations de commande ont été mises à jour');
     }
 
@@ -262,6 +285,10 @@ class OrderController extends BaseController
         $this->authorize('isAdmin');
         $order = $this->order->findOrFail($id);
         $order->delete();
+        Historique::create([
+            'order_id' => $order->id,
+            'text' => 'Agent ' . auth()->user()->id . ' supprimer order'
+        ]);
         return $this->sendResponse($order, 'order has been Deleted');
     }
 }

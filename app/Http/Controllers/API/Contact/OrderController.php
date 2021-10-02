@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 use App\Imports\OrderImport;
 use App\Models\City;
+use App\Models\Historique;
 use App\Models\Product;
 use App\Models\Shipping;
 use Maatwebsite\Excel\Facades\Excel;
@@ -113,6 +114,10 @@ class OrderController extends BaseController
                 $product->save();
             }
             $item->save();
+            Historique::create([
+                'order_id' => $item->id,
+                'text' => 'partenaire ' . auth()->user()->id . ' ramasser order'
+            ]);
         }
         return $this->sendResponse($shipping, 'order list');
     }
@@ -218,55 +223,6 @@ class OrderController extends BaseController
     public function update(Request $request, $id)
     {
         $order = $this->order->findOrFail($id);
-        // $order->update($request->all());
-        $note_json = collect([
-            "note"          => $request->note,
-            "delivery_note" => $request->delivery_note,
-            "sell_shipping_cost" => $request->sell_shipping_cost
-        ]);
-
-        $shipping_json = collect([
-            "shipping_numero" => $request->shipping_numero,
-            "shipping_cost"   => $request->shipping_cost
-        ]);
-
-        $product_json = collect();
-        foreach ($request->rows as $produit) {
-            $product_json->push([
-                "id"          => $produit['id'],
-                "active"      => $produit['active'] ? 1 : 0,
-                "product"     => $produit['product'],
-                "product_name"  => DB::table('products')->where('id', $produit['product'])->first()->name,
-                "unit_cost"   => $produit['unit_cost'],
-                "quantity"    => $produit['quantity'],
-                "sub_total"   => $produit['sub_total']
-            ]);
-        };
-
-        $user = Consumer::firstOrNew([
-            'prenom' =>  request('consumer.prenom'),
-            'nom'    =>  request('consumer.nom')
-        ]);
-        $user->adresse = request('consumer.adresse');
-        $user->ville   = request('consumer.ville');
-        $user->phone   = request('consumer.phone');
-        $user->save();
-        $order->update([
-            'quantity'      => $product_json->count(),
-            'order_status_id'        => $request->order_status,
-            'package'       => $request->package_status,
-            'contact_id'     => $request->contact_id,
-            'consumer_id'   => $request->consumer_id,
-            'product_id'    => 1,
-            'datetime'      => $request->datetime,
-            'upsell_json'   => $product_json,
-            'note_json'     => $note_json,
-            'shipping_id'   => $request->get('shipping_id'),
-            'shipping_json' => $shipping_json,
-            'total'         => $request->get('total'),
-            'subTotal'      => $request->get('subTotal'),
-            'shipping_adresse' => $request->shipping_adresse
-        ]);
         return $this->sendResponse($order, 'order Information has been updated');
     }
     public function relancerOrder(Request $request, $id)
@@ -291,6 +247,10 @@ class OrderController extends BaseController
         $order->order_status_id     = $request->order_status_id;
         $order->user_id = auth()->user()->id;
         $order->save();
+        Historique::create([
+            'order_id' => $order->id,
+            'text' => 'partenaire ' . auth()->user()->id . ' mise a jour order livraison to' . $order->statusLivraison->name
+        ]);
         return $this->sendResponse($order, 'order Information has been updated');
     }
 

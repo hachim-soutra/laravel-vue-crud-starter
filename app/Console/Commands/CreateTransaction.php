@@ -40,12 +40,18 @@ class CreateTransaction extends Command
     public function handle()
     {
         foreach (Contact::all() as $contact) {
-            if ($contact->ordersNotPaye()) {
-                Transaction::create([
+            if ($contact->ordersNotPaye()->count() > 0) {
+                $transaction = Transaction::create([
                     'total' => $contact->ordersNotPaye()->sum('total'),
                     'quantity' =>  $contact->ordersNotPaye()->count(),
                     'contact_id' => $contact->id,
                 ]);
+
+                foreach ($contact->ordersNotPaye() as $item) {
+
+                    $item->transaction_id = $transaction->id;
+                    $item->save();
+                }
             }
         }
     }

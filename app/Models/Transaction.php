@@ -24,4 +24,8 @@ class Transaction extends Model
     {
         return $this->belongsTo(Contact::class);
     }
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
 }

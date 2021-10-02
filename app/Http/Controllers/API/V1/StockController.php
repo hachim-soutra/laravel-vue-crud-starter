@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\V1;
 
+use App\Http\Requests\Users\StockRequest;
 use App\Models\Stock;
 use Illuminate\Http\Request;
 
@@ -54,7 +55,7 @@ class StockController extends BaseController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StockRequest $request)
     {
         $Stock = $this->Stock->create($request->all());
 

@@ -151,8 +151,8 @@ class OrderController extends BaseController
             'note'                => $request->note,
             'dateConfirmation'    => now(),
             'delivery_note'       => $request->delivery_note,
-            'total'               => $request->quantity * $order->product->price,
-            'subTotal'            => $request->quantity * $order->product->price,
+            'total'               => $request->quantity * $order->product->sell,
+            'subTotal'            => $request->quantity * $order->product->sell,
             'shipping_adresse'    => $request->shipping_adresse
 
         ]);

@@ -66,7 +66,7 @@ class OrderImport implements WithStartRow, ToCollection, WithCustomCsvSettings
                         'consumer_ville'        => $row[4],
                         'product_id'            => $produit->id,
                         'contact_id'            => $this->contact_id,
-                        "note"                  => $row[8],
+                        "note"                  => isset($row[8]) ? $row[8] : '',
                         "delivery_note"         => "",
                         'quantity'              => $row[7],
                         'total'                 => $row[7] * $row[6],

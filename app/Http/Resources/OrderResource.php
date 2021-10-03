@@ -30,7 +30,7 @@ class OrderResource extends JsonResource
             'product_name'          => $this->quantity . '*' . $this->product->name,
             'product'               => $this->product,
             'historiques'           => $this->historiques,
-            'product_array'         => $this->contact ? $this->contact->products()->toArray() : [],
+            'product_array'         => $this->contact ? $this->contact->products : [],
             'product_id'            => $this->product_id,
             'quantity'              => $this->quantity,
             'total'                 => $this->total,

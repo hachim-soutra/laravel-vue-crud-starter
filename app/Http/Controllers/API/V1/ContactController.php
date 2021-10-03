@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\V1;
 use App\Http\Requests\Users\ContactRequest;
 use App\Http\Resources\ContactCollection;
 use App\Http\Resources\ContactResource;
+use App\Http\Resources\ProductCollection;
 use App\Http\Resources\ProductResource;
 use App\Models\Contact;
 use App\Models\Product;
@@ -100,18 +101,9 @@ class ContactController extends BaseController
     }
     public function getStock(Contact $contact)
     {
-        $products = $contact->stocks()->select('product_id')->groupBy('product_id')->get()->toArray();
-        $col = collect();
-        foreach ($products as $pro) {
-            $prod = Product::where('id', $pro)->first();
-            $col->push([
-                "produit" => $prod->name, "quantity" =>  $contact->stocks()->where('product_id', $pro)->sum('quantity')
-            ]);
-        }
-        $data["delivery"] = $col;
         $response = [
             'success' => true,
-            'data'    => $data,
+            'data'    => new ProductCollection($contact->products),
             'message' => 'User Profile',
         ];
         return response()->json($response, 200);

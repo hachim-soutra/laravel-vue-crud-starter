@@ -79,7 +79,7 @@ class OrderImport implements WithStartRow, ToCollection, WithCustomCsvSettings
                     $order->save(['timestamps' => false]);
                     Historique::create([
                         'order_id' => $order->id,
-                        'text' => auth()->guard('contact')->check() ? 'partenaire ' . auth()->user()->id . ' import order' : 'Agent ' . auth()->user()->id . ' import order'
+                        'text' => auth()->guard('contact')->check() ? 'partenaire ' . auth()->user()->username . ' import order' : 'Agent ' . auth()->user()->username . ' import order'
                     ]);
                     $this->imported++;
                 }

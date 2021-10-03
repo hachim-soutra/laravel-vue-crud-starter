@@ -94,10 +94,11 @@ class UserController extends BaseController
         $user->roles()->detach();
         $user->assignRole(Role::find($request->input('role_id')));
         $user->permissions()->detach();
-        foreach ($request['permissions'] as  $value) {
-            $user->givePermissionTo(Permission::find($value)->name);
-        };
-
+        if($request['permissions']) {
+            foreach ($request['permissions'] as  $value) {
+                $user->givePermissionTo($value['name']);
+            };
+        }
         return $this->sendResponse($user, 'User Information has been updated');
     }
 

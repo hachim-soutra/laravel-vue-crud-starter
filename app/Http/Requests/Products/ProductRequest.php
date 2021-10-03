@@ -37,11 +37,13 @@ class ProductRequest extends FormRequest
     public function createRules(): array
     {
         return [
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'name' => 'required|string|max:191|unique:products',
             'description' => 'required|string|max:1000',
             'price' => 'required|numeric|gt:0',
             'quantity' => 'required|numeric|gt:0',
             'sell' => 'required|numeric|gt:price',
+            'contact_id' => 'required|exists:contacts,id',
         ];
     }
 

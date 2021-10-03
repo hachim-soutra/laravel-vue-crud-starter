@@ -16,26 +16,16 @@ class Product extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'description', 'price', 'photo', 'sell', 'quantity', 'offre_json','user_id','city_id'
+        'name', 'description', 'price', 'photo', 'sell', 'quantity', 'offre_json','user_id','contact_id','city_id','image'
     ];
-    protected $appends = ['offres','quantityReste'];
+    protected $appends = ['quantityReste'];
 
-    public function orders()
-    {
-        return $this->hasMany(Order::class);
-    }
+
     public function user()
     {
         return $this->belongsTo(User::class,'user_id');
     }
-    public function tags()
-    {
-        return $this->belongsToMany(Tag::class)->select(['name as text', 'id']);
-    }
-    public function getOffresAttribute()
-    {
-        return json_decode($this->offre_json, true);
-    }
+
     public function getQuantityResteAttribute()
     {
         return $this->quantity - $this->stocks->sum('quantity');
@@ -47,5 +37,9 @@ class Product extends Model
     public function stocks()
     {
         return $this->hasMany(Stock::class);
+    }
+    public function contact()
+    {
+        return $this->belongsTo(Contact::class);
     }
 }

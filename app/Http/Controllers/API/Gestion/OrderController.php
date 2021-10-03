@@ -127,7 +127,7 @@ class OrderController extends BaseController
         ]);
         Historique::create([
             'order_id' => $this->order->id,
-            'text' => 'Agent Confirmation ' . auth()->user()->id . ' ajouter order avec ' . $this->order->status->name
+            'text' => 'Agent Confirmation ' . auth()->user()->username . ' ajouter order avec ' . $this->order->status->name
         ]);
         return $this->sendResponse($this->order, 'order Information has been updated');
     }
@@ -158,7 +158,7 @@ class OrderController extends BaseController
         ]);
         Historique::create([
             'order_id' => $order->id,
-            'text' => 'Agent Confirmation ' . auth()->user()->id . ' mise a jour order avec ' . $order->status->name
+            'text' => 'Agent Confirmation ' . auth()->user()->username . ' mise a jour order avec ' . $order->status->name
         ]);
         return $this->sendResponse($order, 'order Information has been updated');
     }
@@ -175,7 +175,7 @@ class OrderController extends BaseController
         ]);
         Historique::create([
             'order_id' => $order->id,
-            'text' => 'Agent Confirmation ' . auth()->user()->id . ' mise a jour order avec ' . $order->status->name
+            'text' => 'Agent Confirmation ' . auth()->user()->username . ' mise a jour order avec ' . $order->status->name
         ]);
         return $this->sendResponse($order, 'order Information has been updated');
     }

@@ -70,7 +70,7 @@ class OrderController extends BaseController
         if ($request->status_livraison_id) {
             $orders = $orders->where('status_livraison_id', $request->status_livraison_id);
         }
-        return $this->sendResponse(new OrderCollection($orders), 'order list');
+        return $this->sendResponse(new OrderCollection($orders->sortByDesc('created_at')), 'order list');
     }
     public function getDelivryOrder($shipping_id)
     {
@@ -136,7 +136,7 @@ class OrderController extends BaseController
                 $item->save();
                 Historique::create([
                     'order_id' => $item->id,
-                    'text' => 'Agent ' . auth()->user()->id . ' ramasser order'
+                    'text' => 'Agent ' . auth()->user()->username . ' ramasser order'
                 ]);
             }else {
                 return response()->json(
@@ -235,7 +235,7 @@ class OrderController extends BaseController
         ]);
         Historique::create([
             'order_id' => $order->id,
-            'text' => 'Agent ' . auth()->user()->id . ' mise a jour order to' . $order->status->name
+            'text' => 'Agent ' . auth()->user()->username . ' mise a jour order to' . $order->status->name
         ]);
         return $this->sendResponse($order, 'Les informations de commande ont été mises à jour');
     }
@@ -251,7 +251,7 @@ class OrderController extends BaseController
             ]);
             Historique::create([
                 'order_id' => $order->id,
-                'text' => 'Agent ' . auth()->user()->id . ' relancer order'
+                'text' => 'Agent ' . auth()->user()->username . ' relancer order'
             ]);
         }
         return $this->sendResponse($order, 'Les informations de commande ont été mises à jour');
@@ -269,7 +269,7 @@ class OrderController extends BaseController
         $order->save();
         Historique::create([
             'order_id' => $order->id,
-            'text' => 'Agent ' . auth()->user()->id . ' mise a jour order livraison to' . $order->statusLivraison->name
+            'text' => 'Agent ' . auth()->user()->username . ' mise a jour order livraison to' . $order->statusLivraison->name
         ]);
         return $this->sendResponse($order, 'Les informations de commande ont été mises à jour');
     }
@@ -287,7 +287,7 @@ class OrderController extends BaseController
         $order->delete();
         Historique::create([
             'order_id' => $order->id,
-            'text' => 'Agent ' . auth()->user()->id . ' supprimer order'
+            'text' => 'Agent ' . auth()->user()->username . ' supprimer order'
         ]);
         return $this->sendResponse($order, 'order has been Deleted');
     }

@@ -116,7 +116,7 @@ class OrderController extends BaseController
             $item->save();
             Historique::create([
                 'order_id' => $item->id,
-                'text' => 'partenaire ' . auth()->user()->id . ' ramasser order'
+                'text' => 'partenaire ' . auth()->user()->username . ' ramasser order'
             ]);
         }
         return $this->sendResponse($shipping, 'order list');
@@ -249,7 +249,7 @@ class OrderController extends BaseController
         $order->save();
         Historique::create([
             'order_id' => $order->id,
-            'text' => 'partenaire ' . auth()->user()->id . ' mise a jour order livraison to' . $order->statusLivraison->name
+            'text' => 'partenaire ' . auth()->user()->username . ' mise a jour order livraison to' . $order->statusLivraison->name
         ]);
         return $this->sendResponse($order, 'order Information has been updated');
     }

@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Http\Requests\Products\ProductRequest;
+use App\Http\Resources\ProductCollection;
 use App\Http\Resources\ProductResource;
 use App\Models\Contact;
 use App\Models\Product;
+use App\Models\Stock;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
@@ -42,7 +44,7 @@ class ProductController extends BaseController
     {
         $products = $this->product->latest()->get();
 
-        return $this->sendResponse($products, 'Product list');
+        return $this->sendResponse(new ProductCollection($products), 'Product list');
     }
     public function list()
     {
@@ -65,16 +67,20 @@ class ProductController extends BaseController
      */
     public function store(ProductRequest $request)
     {
+        $imageName = time().'.'.$request->image->extension();
+
+        $request->image->storeAs('public/images', $imageName);
 
         $product = $this->product->create([
             'name' => $request->get('name'),
+            'image' => $imageName,
             'description' => $request->get('description'),
             'price' => $request->get('price'),
             'sell' => $request->get('sell'),
             'user_id' => auth()->user()->id,
             'quantity' => $request->get('quantity'),
+            'contact_id' => $request->get('contact_id'),
         ]);
-
         return $this->sendResponse($product, 'Product Created Successfully');
     }
 

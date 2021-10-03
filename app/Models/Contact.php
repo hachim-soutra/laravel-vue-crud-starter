@@ -34,14 +34,18 @@ class Contact extends Authenticatable
     {
         return $this->hasMany(Order::class);
     }
+    public function products()
+    {
+        return $this->hasMany(Product::class);
+    }
     public function stocks()
     {
         return $this->hasMany(Stock::class);
     }
-    public function products()
-    {
-        return Product::whereIn('id', $this->stocks()->pluck('product_id'))->get();
-    }
+    // public function products()
+    // {
+    //     return Product::whereIn('id', $this->stocks()->pluck('product_id'))->get();
+    // }
 
     public function ordersNotPaye()
     {

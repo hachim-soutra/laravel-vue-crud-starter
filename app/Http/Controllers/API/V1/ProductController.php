@@ -130,8 +130,6 @@ class ProductController extends BaseController
     public function destroy($id)
     {
 
-        $this->authorize('isAdmin');
-
         $product = $this->product->findOrFail($id);
 
         $product->delete();

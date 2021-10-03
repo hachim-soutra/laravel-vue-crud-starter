@@ -35,9 +35,16 @@ class OrderController extends BaseController
         $orders = auth()->user()->orderValide;
         return $this->sendResponse(new OrderResource($orders), 'order list');
     }
-    public function historique()
+    public function historique(Request $request)
     {
         $orders = auth()->user()->orderHistorique;
+        if ($request->produit_id) {
+            $orders = $orders->where('product_id', $request->produit_id);
+        }
+
+        if ($request->order_status_id) {
+            $orders = $orders->where('order_status_id', $request->order_status_id);
+        }
         return $this->sendResponse(new OrderCollection($orders), 'order list');
     }
     public function refresh()

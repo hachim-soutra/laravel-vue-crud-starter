@@ -43,7 +43,6 @@ class LivreurRequest extends FormRequest
             'city_id' => 'required|exists:cities,id',
             'phone' => 'required|string|max:191',
             'price' => 'required|numeric|gt:0',
-            'dure' => 'required|numeric|gt:0',
             'email' => 'required|string|email|max:191|unique:shippings',
             'password' => 'required|string|min:6'
         ];
@@ -62,7 +61,6 @@ class LivreurRequest extends FormRequest
             'city_id' => 'required|exists:cities,id',
             'phone' => 'required|string|max:191',
             'price' => 'required|numeric|gt:0',
-            'dure' => 'required|numeric|gt:0',
             'email' => 'sometimes|string|email|max:191|unique:shippings,email,' . $this->get('id')
         ];
     }

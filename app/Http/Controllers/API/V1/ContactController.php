@@ -132,8 +132,6 @@ class ContactController extends BaseController
      */
     public function destroy($id)
     {
-        $this->authorize('isAdmin');
-
         $Contact = $this->Contact->findOrFail($id);
 
         $Contact->delete();

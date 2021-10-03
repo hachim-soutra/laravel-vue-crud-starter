@@ -69,7 +69,7 @@ class Order extends Model
 
     public function getIsCanRammasageAttribute()
     {
-        return $this->product->stocks->where('contact_id', $this->contact_id)->sum('quantity') >= $this->quantity;
+        return $this->product ? $this->product->quantity >= $this->quantity : false;
     }
 
     public function getProductNameAttribute()

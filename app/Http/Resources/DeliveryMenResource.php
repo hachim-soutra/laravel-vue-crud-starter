@@ -17,7 +17,6 @@ class DeliveryMenResource extends JsonResource
         return [
             'id'                    => $this->id,
             'price'                 => $this->price,
-            'dure'                  => $this->dure,
             'type'                  => $this->type,
             'status'                => $this->status,
             'tarif'                 => $this->tarif,

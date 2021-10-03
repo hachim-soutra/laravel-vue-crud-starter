@@ -35,7 +35,7 @@ class LastActivityUser
    {
         if ($this->auth->check() && $this->auth->user()->last_activity < now()->subMinutes(5)->format('Y-m-d H:i:s')) {
             $user = $this->auth->user();
-            $user->last_activity = new \DateTime;
+            $user->last_activity = now();
             $user->timestamps = false;
             $user->save();
        }

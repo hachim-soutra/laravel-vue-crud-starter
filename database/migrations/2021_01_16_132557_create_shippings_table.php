@@ -16,7 +16,6 @@ class CreateShippingsTable extends Migration
         Schema::create('shippings', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
-            $table->integer('dure');
             $table->double('price');
             $table->string('type');
             $table->string('status');

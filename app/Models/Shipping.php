@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -13,10 +14,10 @@ use Laravel\Passport\HasApiTokens;
 class Shipping extends Authenticatable
 
 {
-    use HasFactory, Notifiable, HasApiTokens;
+    use HasFactory, Notifiable, HasApiTokens, SoftDeletes;
 
     protected $fillable = [
-        'name', 'price', 'dure', 'status', 'tarif', 'phone', 'email', 'password', 'city', 'city_id'
+        'name', 'price', 'status', 'tarif', 'phone', 'email', 'password', 'city', 'city_id'
     ];
 
     protected $hidden = [

@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Models\Order;
+use DateTime;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class GestionResource extends JsonResource
@@ -28,7 +29,7 @@ class GestionResource extends JsonResource
             'country'           => $this->country ? $this->country->name : '',
             'orders-valide'     => $this->orders ? $this->orders->count() : '',
             'phone'             => $this->phone,
-            'isOnline'          => $this->last_activity ? true : false,
+            'isOnline'          => $this->last_activity ? $this->last_activity >= now()->subMinutes(5)->format('Y-m-d H:i:s') : false,
             'orders'            => Order::where('order_status_id', 1)->where('city_id', $this->city_id)->whereNull('gestion_id')->count(),
             // 'notificactions'    => $this->unreadNotifications,
             'created_at'        => $this->created_at ? $this->created_at->format('Y-m-d') : "",

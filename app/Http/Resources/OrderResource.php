@@ -27,7 +27,7 @@ class OrderResource extends JsonResource
             'shipping_adresse'      => $this->shipping_adresse,
             'contact'               => $this->contact,
             'order_status_id'       => $this->order_status_id,
-            'product_name'          => $this->quantity . '*' . $this->product->name,
+            'product_name'          => $this->product ? $this->quantity . '*' . $this->product->name : '',
             'product'               => $this->product,
             'historiques'           => $this->historiques,
             'product_array'         => $this->contact ? $this->contact->products : [],

@@ -58,7 +58,6 @@ class ShippingController extends BaseController
             'email'     => $request->email,
             'password'  => Hash::make($request->password),
             'price'     => $request->price,
-            'dure'      => $request->dure,
             'phone'     => $request->phone,
             'city'      => $request->city,
             'city_id'   => $request->city_id,
@@ -100,7 +99,6 @@ class ShippingController extends BaseController
      */
     public function destroy($id)
     {
-        $this->authorize('isAdmin');
         $shipping = $this->shipping->findOrFail($id);
         $shipping->delete();
         return $this->sendResponse($shipping, 'shipping has been Deleted');

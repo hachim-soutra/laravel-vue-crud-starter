@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use DateTime;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -24,7 +25,7 @@ class UserResource extends JsonResource
             'role'              => $this->getRoleNames(),
             'permissions'       => $this->getDirectPermissions(),
             'admin'             => $this->admin ? $this->admin->name : '',
-            'isOnline'          => $this->last_activity ? true : false,
+            'isOnline'          => $this->last_activity ? $this->last_activity < now()->subMinutes(5)->format('Y-m-d H:i:s') : false,
             'status'            => $this->status,
             'phone'             => $this->phone,
             'city_id'             => $this->city_id,

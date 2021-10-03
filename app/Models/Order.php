@@ -78,11 +78,18 @@ class Order extends Model
     }
     public static function allOrder()
     {
-        $posts = app(Pipeline::class)
-            ->send(\App\Models\Order::query())
-            ->thenReturn()
-            ->get();
-        return $posts;
+        if (auth()->user()->roles->first()->id == 1){
+            $orders = app(Pipeline::class)
+                ->send(\App\Models\Order::query())
+                ->thenReturn()
+                ->get();
+        }else {
+            $orders = app(Pipeline::class)
+                ->send(\App\Models\Order::query()->whereIn('city_id',auth()->user()->city_id))
+                ->thenReturn()
+                ->get();
+        }
+        return $orders;
     }
     public static function delivryOrder($id)
     {

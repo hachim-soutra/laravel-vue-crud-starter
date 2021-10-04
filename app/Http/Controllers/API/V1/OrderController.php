@@ -122,7 +122,7 @@ class OrderController extends BaseController
             $item = Order::find($order["id"]);
             $item->shipping_id = $shipping->id;
             $item->status_livraison_id = 1;
-            if($item->produit->quantity >= $item->quantity) {
+            if($item->product->quantity >= $item->quantity) {
                 Historique::create([
                     'order_id' => $item->id,
                     'text' => 'Agent ' . auth()->user()->username . ' ramasser order'

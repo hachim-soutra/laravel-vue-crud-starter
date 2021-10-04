@@ -66,6 +66,7 @@ class OrderController extends BaseController
     public function rammasage(Shipping $shipping, Request $request)
     {
         foreach ($request->orders as $order) {
+        // foreach (Order::all() as $order) {
             $item = Order::find($order["id"]);
             $item->shipping_id = $shipping->id;
             foreach ($order["product_array"] as $produit) {

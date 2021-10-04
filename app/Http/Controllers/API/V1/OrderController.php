@@ -122,18 +122,7 @@ class OrderController extends BaseController
             $item = Order::find($order["id"]);
             $item->shipping_id = $shipping->id;
             $item->status_livraison_id = 1;
-
-            $stockQuantity = $item->product->stocks->where('contact_id', $item->contact_id)->sum('quantity');
-            if($stockQuantity >= $item->quantity) {
-                Stock::create([
-                    'contact_id' => $item->contact_id,
-                    'quantity'   => -$item->quantity,
-                    'product_id' => $item->product_id,
-                ]);
-                $produit = Product::find($item->product_id);
-                $produit->quantity -= $item->quantity;
-                $produit->save();
-                $item->save();
+            if($item->produit->quantity >= $item->quantity) {
                 Historique::create([
                     'order_id' => $item->id,
                     'text' => 'Agent ' . auth()->user()->username . ' ramasser order'

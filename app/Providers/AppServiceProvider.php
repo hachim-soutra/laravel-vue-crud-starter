@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Hello\Hello;
+use App\Models\Order;
+use App\Observers\OrderObserver;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Schema\Builder;
 use Illuminate\Support\Facades\Schema;
@@ -27,7 +29,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Schema::defaultStringLength(1071);;
+        Schema::defaultStringLength(1071);
+        Order::observe(OrderObserver::class);
         Builder::defaultStringLength(191);
         Passport::routes();
     }

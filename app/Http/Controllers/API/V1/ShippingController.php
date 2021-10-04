@@ -42,7 +42,7 @@ class ShippingController extends BaseController
     public function list()
     {
         $shippings = shipping::all();
-        return $this->sendResponse($shippings, 'shipping list 333');
+        return $this->sendResponse($shippings, 'shipping list');
     }
 
     /**

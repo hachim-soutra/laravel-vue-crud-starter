@@ -26,6 +26,11 @@ class Product extends Model
         return $this->belongsTo(User::class,'user_id');
     }
 
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
     public function getQuantityResteAttribute()
     {
         return $this->quantity - $this->stocks->sum('quantity');

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\Contact;
 
+use App\Http\Requests\Products\ProductContactRequest;
 use App\Http\Requests\Products\ProductRequest;
 use App\Http\Resources\ProductCollection;
 use App\Http\Resources\ProductResource;
@@ -34,22 +35,12 @@ class ProductController extends BaseController
      */
     public function index()
     {
-        $products = auth()->user()->stocks()->select('product_id')->groupBy('product_id')->get()->toArray();
-        $col = collect();
-        foreach ($products as $pro) {
-            $prod = Product::where('id', $pro)->first();
-            $col->push([
-                "produit" => $prod->name, "quantity" =>  auth()->user()->stocks()->where('product_id', $pro)->sum('quantity'), "produit-reste" => $prod->quantityReste,
-            ]);
-        }
-        $response["products"] = $col;
-        $response['stocks'] =  new StockCollection(auth()->user()->stocks()->get());
-        return $this->sendResponse($response, 'Product list');
+        $products = auth()->user()->products;
+        return $this->sendResponse(new ProductCollection($products), 'Product list');
     }
     public function list()
     {
-        $products = auth()->user()->products();
-
+        $products = auth()->user()->products;
         return $this->sendResponse($products, 'Product list');
     }
 
@@ -59,15 +50,20 @@ class ProductController extends BaseController
      * @param  App\Http\Requests\Products\ProductRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(ProductRequest $request)
+    public function store(ProductContactRequest $request)
     {
 
+        $imageName = time().'.'.$request->image->extension();
+
+        $request->image->storeAs('public/images', $imageName);
         $product = $this->product->create([
             'name' => $request->get('name'),
+            'image' => $imageName,
             'description' => $request->get('description'),
             'price' => $request->get('price'),
             'sell' => $request->get('sell'),
             'user_id' => auth()->user()->id,
+            'contact_id' => auth()->user()->id,
             'quantity' => $request->get('quantity'),
         ]);
 

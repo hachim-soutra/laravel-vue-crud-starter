@@ -108,6 +108,7 @@ class OrderController extends BaseController
         }
 
         if ($request->order_status_id) {
+
             $orders = $orders->where('order_status_id', $request->order_status_id);
         }
 
@@ -130,9 +131,13 @@ class OrderController extends BaseController
             }else {
                 return response()->json(
                     [
-                        'message' => $item->contact->name.' n\'a pas la quantity '.$item->quantity.'dans le produit '.$item->produit->name
+                        'message' => $item->contact->username.' n\'a pas la quantity '.$item->quantity.'dans le produit '.$item->product->name
                     ], 500);
             }
+        }
+        foreach ($request->orders as $order) {
+            $item = Order::find($order["id"]);
+            $item->save();
         }
         return $this->sendResponse($shipping, 'order list');
     }

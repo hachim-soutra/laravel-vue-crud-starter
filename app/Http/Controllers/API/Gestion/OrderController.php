@@ -115,9 +115,9 @@ class OrderController extends BaseController
                 ], 500);
         }
 
-        $total = $request->quantity * Product::findOrFail($request->product_id)->sell;
+        $total = $request->quantity * $request->price;
 
-        $this->order->create([
+        $order = $this->order->create([
             'quantity'            => $request->quantity,
             'consumer_phone'      => $request->consumer_phone,
             'consumer_name'       => $request->consumer_name,
@@ -134,10 +134,10 @@ class OrderController extends BaseController
             'shipping_adresse'    => $request->shipping_adresse
         ]);
         Historique::create([
-            'order_id' => $this->order->id,
-            'text' => 'Agent Confirmation ' . auth()->user()->username . ' ajouter order avec ' . $this->order->status->name
+            'order_id' => $order->id,
+            'text' => 'Agent Confirmation ' . auth()->user()->username . ' ajouter order'
         ]);
-        return $this->sendResponse($this->order, 'order Information has been updated');
+        return $this->sendResponse($order, 'order Information has been updated');
     }
     public function update(Request $request, $id)
     {

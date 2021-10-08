@@ -137,6 +137,8 @@ class OrderController extends BaseController
         }
         foreach ($request->orders as $order) {
             $item = Order::find($order["id"]);
+            $item->shipping_id = $shipping->id;
+            $item->status_livraison_id = 1;
             $item->save();
         }
         return $this->sendResponse($shipping, 'order list');

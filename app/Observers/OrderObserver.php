@@ -32,11 +32,8 @@ class OrderObserver
                 $produit = $order->product;
                 $produit->quantity = $produit->quantity + $order->quantity;
                 $produit->save();
-
             }
 
-
-            dd($order->getOriginal('status_livraison_id'), $order->status_livraison_id);
             if($order->status_livraison_id === 1){
                 $produit = $order->product;
                 $produit->quantity -= $order->quantity;

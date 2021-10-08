@@ -33,7 +33,7 @@ class OrderController extends BaseController
      */
     public function index($status = null, City $city = null, Request $request)
     {
-        $orders = auth()->user()->orders->latest();
+        $orders = auth()->user()->orders->latest()->get();
 
 
         if ($status) {

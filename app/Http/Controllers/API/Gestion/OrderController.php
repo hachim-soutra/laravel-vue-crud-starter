@@ -52,7 +52,7 @@ class OrderController extends BaseController
         if (auth()->user()->orderValide) {
             return $this->sendResponse(new OrderResource(auth()->user()->orderValide), 'order list');
         }
-        $order = $this->order->where('order_status_id', 1)->whereNull('gestion_id')->first();
+        $order = $this->order->where('city_id', auth()->user()->city_id)->where('order_status_id', 1)->whereNull('gestion_id')->first();
         $order->gestion_id =  auth()->user()->id;
         $order->save();
 

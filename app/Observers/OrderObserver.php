@@ -30,15 +30,19 @@ class OrderObserver
             // email has changed
             if($order->getOriginal('status_livraison_id') === 1 && $order->status_livraison_id != 2 && $order->status_livraison_id != 6){
                 $produit = $order->product;
-                $produit->quantity += $order->quantity;
+                $produit->quantity = $produit->quantity + $order->quantity;
                 $produit->save();
             }
+
 
             if($order->status_livraison_id === 1){
                 $produit = $order->product;
                 $produit->quantity -= $order->quantity;
                 $produit->save();
             }
+
+            dd($produit->quantity);
+
         }
     }
 

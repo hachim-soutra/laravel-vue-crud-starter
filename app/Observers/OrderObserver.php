@@ -32,6 +32,8 @@ class OrderObserver
                 $produit = $order->product;
                 $produit->quantity = $produit->quantity + $order->quantity;
                 $produit->save();
+
+                dd($produit);
             }
 
 
@@ -41,7 +43,7 @@ class OrderObserver
                 $produit->save();
             }
 
-            dd($produit->quantity);
+
 
         }
     }

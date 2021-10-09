@@ -42,13 +42,13 @@ class OrderObserver
 
             if($order->status_livraison_id === 2 && $order->getOriginal('status_livraison_id') != 1 && $order->getOriginal('status_livraison_id') != 6 ){
                 $produit = $order->product;
-                $produit->quantity -= $order->quantity;
+                $produit->quantity += $order->quantity;
                 $produit->save();
             }
 
             if($order->status_livraison_id === 6 && $order->getOriginal('status_livraison_id') != 1 && $order->getOriginal('status_livraison_id') != 1 ){
                 $produit = $order->product;
-                $produit->quantity -= $order->quantity;
+                $produit->quantity += $order->quantity;
                 $produit->save();
             }
         }

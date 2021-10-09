@@ -74,8 +74,8 @@ class OrderImport implements WithStartRow, ToCollection, WithCustomCsvSettings
                         'city_id'               => $this->id,
                         'user_id'               => auth()->user()->id,
                     ]);
-                    $order->created_at = now();
-                    // $order->created_at = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[0])->format('Y-m-d');
+                    // $order->created_at = now();
+                    $order->created_at = Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[0]))->format('Y-m-d');
                     $order->save(['timestamps' => false]);
                     Historique::create([
                         'order_id' => $order->id,

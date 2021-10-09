@@ -79,7 +79,7 @@ class OrderController extends BaseController
     }
     public function getOrderReportie()
     {
-        $orders = $this->order->where('order_status_id', 9)->get();
+        $orders = $this->order->whereIn('order_status_id',[8,4,9])->get();
         return $this->sendResponse(new OrderCollection($orders), 'order list');
     }
     public function getDelivryOrderExpide($shipping_id, Request $request)

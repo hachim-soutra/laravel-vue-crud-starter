@@ -225,16 +225,22 @@ class OrderController extends BaseController
         $order = $this->order->findOrFail($id);
         return $this->sendResponse($order, 'order Information has been updated');
     }
-    public function relancerOrder(Request $request, $id)
+    public function relancerOrder(Request $request)
     {
-        $order = $this->order->findOrFail($id);
-        $order->update([
-            'order_status_id'     => 1,
-            'status_livraison_id' => null,
-            'gestion_id'          => null,
-            'shipping_id'         => null,
-        ]);
-        return $this->sendResponse($order, 'order Information has been updated');
+        foreach ($request->orders as $order) {
+            $order = Order::find($order["id"]);
+            $order->update([
+                'order_status_id'     => 1,
+                'status_livraison_id' => null,
+                'gestion_id'          => null,
+                'shipping_id'         => null,
+            ]);
+            Historique::create([
+                'order_id' => $order->id,
+                'text' => 'Agent ' . auth()->user()->username . ' relancer order'
+            ]);
+        }
+        return $this->sendResponse($order, 'Les informations de commande ont été mises à jour');
     }
     public function updateStatusLivreur(Request $request, $id)
     {

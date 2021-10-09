@@ -41,9 +41,8 @@ class Shipping extends Authenticatable
 
     public function getCreditAttribute()
     {
-        $order          = $this->orders->where('order_status_id', 6)->count() * $this->price;
-        $order_tarif    = $this->orders->where('order_status_id', 6)->sum('tarif');
-        return $order + $order_tarif;
+        $order          = $this->orders->where('status_livraison_id', 2)->sum('total');
+        return $order;
     }
 
     public function getOrderExpiderAttribute()

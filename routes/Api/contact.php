@@ -17,11 +17,12 @@ Route::namespace('App\\Http\\Controllers\\API\Contact')->middleware(['cors', 'au
     Route::get('auth/verify', 'AuthController@verify');
     Route::post('update-info', 'AuthController@updateInfo');
     Route::get('get-info', 'AuthController@getInfo');
-    Route::put('order-relancer/{id}', 'OrderController@relancerOrder');
+    Route::put('order-relancer', 'OrderController@relancerOrder');
     Route::put('order/status-livreur/{id}', 'OrderController@updateStatusLivreur');
     Route::get('order/status/{status}/{city:id}', 'OrderController@index');
 
     Route::apiResources([
+
         'orderStatus'   => 'OrderStatusController',
         'order'         => 'OrderController',
         'country'       => 'CityController',

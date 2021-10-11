@@ -22,6 +22,7 @@ class UserResource extends JsonResource
             'email'             => $this->email,
             'country'           => $this->country ? $this->country->name : '',
             'role_id'           => $this->roles->first()->id,
+            'role_name'           => $this->roles->first()->name,
             'role'              => $this->getRoleNames(),
             'permissions'       => $this->getDirectPermissions(),
             'admin'             => $this->admin ? $this->admin->name : '',

@@ -42,13 +42,60 @@ class ProfileController extends Controller
     {
         $start = request('start');
         $end = request('end');
-        $data["total_orders"]       = Order::whereBetween('created_at', [$start, $end])->count();
-        $data["total_sales"]        = Order::whereBetween('created_at', [$start, $end])->where("status", "PAID")->sum('total');
-        $data["confirmed_orders"]   = Order::whereBetween('created_at', [$start, $end])->where("status", "CONFIRMED")->count();
-        $data["in_progress_orders"] = Order::whereBetween('created_at', [$start, $end])->where("status", "PROCESSED")->count();
-        $data["delivred_orders"]    = Order::whereBetween('created_at', [$start, $end])->where("status", "READY")->count();
-        $data["payed_orders"]       = Order::whereBetween('created_at', [$start, $end])->where("status", "PAID")->count();
-        $data["payed_orders_amount"]       = Order::whereBetween('created_at', [$start, $end])->where("status", "PAID")->sum('total');
+        $total = auth()->user()->hasRole(['Super Admin']) ? Order::count() : Order::where('user_id',auth()->user()->id)->count();
+        $data["total_orders"]       = auth()->user()->hasRole(['Super Admin']) ? Order::sum('total') : Order::where('user_id',auth()->user()->id)->sum('total');
+        $data["sales"]              = $total;
+        $data["agent"]              = User::count();
+        $data["livreur"]            = Shipping::count();
+        $data["product"]            = Product::count();
+
+        $data["confirmed_orders"]   = Order::where("order_status_id", 3)->count();
+
+        $data["in_progress_orders"] = Order::where("status_livraison_id", 1)->count();
+        $data["delivred_orders"]    = Order::where("status_livraison_id", 2)->count();
+
+
+        $data["payed_orders_amount"]       = Order::whereBetween('created_at', [$start, $end])->where("status_livraison_id", 6)->sum('total');
+
+        // orders earning
+        $data["payed_order"]                = auth()->user()->hasRole(['Super Admin']) ? (Order::where("status_livraison_id", 6)->count()) : (Order::where("status_livraison_id", 6)->where('user_id',auth()->user()->id)->count());
+        $data["payed_order_progress"]       = auth()->user()->hasRole(['Super Admin']) ? (Order::where("status_livraison_id", 6)->count()*100/ $total) : (Order::where("status_livraison_id", 6)->where('user_id',auth()->user()->id)->count()*100/ $total);
+
+        $data["livred_order"]               = auth()->user()->hasRole(['Super Admin']) ? (Order::where("status_livraison_id", 2)->count()) : (Order::where("status_livraison_id", 2)->where('user_id',auth()->user()->id)->count());
+        $data["livred_order_progress"]      = auth()->user()->hasRole(['Super Admin']) ? (Order::where("status_livraison_id", 2)->count()*100/ $total) : (Order::where("status_livraison_id", 2)->where('user_id',auth()->user()->id)->count()*100/ $total);
+
+        $data["expedie_order"]              = auth()->user()->hasRole(['Super Admin']) ? (Order::where("status_livraison_id", 1)->count()) : (Order::where("status_livraison_id", 1)->where('user_id',auth()->user()->id)->count());
+        $data["expedie_order_progress"]     = auth()->user()->hasRole(['Super Admin']) ? (Order::where("status_livraison_id", 1)->count()*100/ $total) : (Order::where("status_livraison_id", 1)->where('user_id',auth()->user()->id)->count()*100/ $total);
+
+        $data["reporter_order"]             = auth()->user()->hasRole(['Super Admin']) ? Order::where("status_livraison_id", 3)->count() : Order::where("status_livraison_id", 3)->where('user_id',auth()->user()->id)->count();
+        $data["reporter_order_progress"]    = auth()->user()->hasRole(['Super Admin']) ? Order::where("status_livraison_id", 3)->count()*100/ $total : Order::where("status_livraison_id", 3)->where('user_id',auth()->user()->id)->count()*100/ $total;
+
+        $data["annuler_order"]              = auth()->user()->hasRole(['Super Admin']) ? (Order::where("status_livraison_id", 7)->count()) : (Order::where("status_livraison_id", 7)->where('user_id',auth()->user()->id)->count());
+        $data["annuler_order_progress"]     = auth()->user()->hasRole(['Super Admin']) ? (Order::where("status_livraison_id", 7)->count()*100/ $total) : (Order::where("status_livraison_id", 7)->where('user_id',auth()->user()->id)->count()*100/ $total);
+
+        $data["other_order"]                = auth()->user()->hasRole(['Super Admin']) ? (Order::whereNotIN("status_livraison_id", [6, 2, 1, 3, 7])->count()) : (Order::whereNotIN("status_livraison_id", [6, 2, 1, 3, 7])->where('user_id',auth()->user()->id)->count());
+        $data["other_order_progress"]       = auth()->user()->hasRole(['Super Admin']) ? (Order::whereNotIN("status_livraison_id", [6, 2, 1, 3, 7])->count()*100/ $total) : (Order::whereNotIN("status_livraison_id", [6, 2, 1, 3, 7])->where('user_id',auth()->user()->id)->count()*100/ $total);
+
+        // orders status
+
+        $data["expedie_order_status"]           = auth()->user()->hasRole(['Super Admin']) ? (Order::where("order_status_id", 1)->count()) : (Order::where("order_status_id", 1)->where('user_id',auth()->user()->id)->count());
+        $data["expedie_order_status_progress"]  = auth()->user()->hasRole(['Super Admin']) ? (Order::where("order_status_id", 1)->count()*100/ $total) : (Order::where("order_status_id", 1)->where('user_id',auth()->user()->id)->count()*100/ $total);
+
+        $data["confirme_order_status"]              = auth()->user()->hasRole(['Super Admin']) ? (Order::where("order_status_id", 3)->count()) : (Order::where("order_status_id", 3)->where('user_id',auth()->user()->id)->count());
+        $data["confirme_order_status_progress"]     = auth()->user()->hasRole(['Super Admin']) ? (Order::where("order_status_id", 3)->count()*100/ $total) : (Order::where("order_status_id", 3)->where('user_id',auth()->user()->id)->count()*100/ $total);
+
+        $data["reporter_order_status"]              = auth()->user()->hasRole(['Super Admin']) ? (Order::where("order_status_id", 9)->count()) : (Order::where("order_status_id", 9)->where('user_id',auth()->user()->id)->count());
+        $data["reporter_order_status_progress"]     = auth()->user()->hasRole(['Super Admin']) ? (Order::where("order_status_id", 9)->count()*100/ $total) : (Order::where("order_status_id", 9)->where('user_id',auth()->user()->id)->count()*100/ $total);
+
+        $data["waitting_order_status"]              = auth()->user()->hasRole(['Super Admin']) ? (Order::where("order_status_id", 4)->count()) : (Order::where("order_status_id", 4)->where('user_id',auth()->user()->id)->count());
+        $data["waitting_order_status_progress"]     = auth()->user()->hasRole(['Super Admin']) ? (Order::where("order_status_id", 4)->count()*100/ $total) : (Order::where("order_status_id", 4)->where('user_id',auth()->user()->id)->count()*100/ $total);
+
+        $data["annuler_order_status"]               = auth()->user()->hasRole(['Super Admin']) ? (Order::where("order_status_id", 7)->count()) : (Order::where("order_status_id", 7)->where('user_id',auth()->user()->id)->count());
+        $data["annuler_order_status_progress"]      = auth()->user()->hasRole(['Super Admin']) ? (Order::where("order_status_id", 7)->count()*100/ $total) : (Order::where("order_status_id", 7)->where('user_id',auth()->user()->id)->count()*100/ $total);
+
+        $data["other_order_status"]             = auth()->user()->hasRole(['Super Admin']) ? (Order::whereNotIN("order_status_id", [6, 2, 1, 3, 7])->count()) : (Order::whereNotIN("order_status_id", [6, 2, 1, 3, 7])->where('user_id',auth()->user()->id)->count()) ;
+        $data["other_order_status_progress"]    = auth()->user()->hasRole(['Super Admin']) ? (Order::whereNotIN("order_status_id", [6, 2, 1, 3, 7])->count()*100/ $total) : (Order::whereNotIN("order_status_id", [6, 2, 1, 3, 7])->where('user_id',auth()->user()->id)->count()*100/ $total);
+
 
         $response = [
             'success' => true,

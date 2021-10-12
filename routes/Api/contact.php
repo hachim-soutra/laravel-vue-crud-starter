@@ -20,6 +20,7 @@ Route::namespace('App\\Http\\Controllers\\API\Contact')->middleware(['cors', 'au
     Route::put('order-relancer', 'OrderController@relancerOrder');
     Route::put('order/status-livreur/{id}', 'OrderController@updateStatusLivreur');
     Route::get('order/status/{status}/{city:id}', 'OrderController@index');
+    Route::get('dashboard', 'ProfileController@dashboard');
 
     Route::apiResources([
 

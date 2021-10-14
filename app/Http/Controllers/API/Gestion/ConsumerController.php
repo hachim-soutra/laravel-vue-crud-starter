@@ -64,7 +64,7 @@ class ConsumerController extends BaseController
             'status'        => $request->get('status')
         ]);
 
-        return $this->sendResponse($consumer, 'Consumer Created Successfully');
+        return $this->sendResponse($consumer, 'Consumer Créé avec succès');
 
     }
 
@@ -105,7 +105,7 @@ class ConsumerController extends BaseController
 
         $consumer->update($request->all());
 
-        return $this->sendResponse($consumer, 'consumer Information has been updated');
+        return $this->sendResponse($consumer, 'consumer Les informations ont été mises à jour');
     }
 
     /**
@@ -122,7 +122,7 @@ class ConsumerController extends BaseController
 
         $consumer->delete();
 
-        return $this->sendResponse($consumer, 'Consumer has been Deleted');
+        return $this->sendResponse($consumer, 'Consumer a été supprimé');
 
     }
 }

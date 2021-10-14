@@ -65,11 +65,10 @@ class BaseController extends Controller
     public function unauthorizedResponse($error = 'Forbidden', $code = 403)
     {
         $response = [
-            'success' => false,
             'message' => $error,
         ];
 
-        
+
         return response()->json($response, $code);
     }
 }

@@ -55,7 +55,7 @@ class SourceController extends BaseController
             'status'    => 'active',
             'token'     => $uniqueStr
         ]);
-        return $this->sendResponse($Source, 'Source Created Successfully');
+        return $this->sendResponse($Source, 'Source Créé avec succès');
     }
 
     /**
@@ -81,7 +81,7 @@ class SourceController extends BaseController
     {
         $Source = $this->Source->findOrFail($id);
         $Source->update($request->all());
-        return $this->sendResponse($Source, 'Source Information has been updated');
+        return $this->sendResponse($Source, 'Source Les informations ont été mises à jour');
     }
 
     /**
@@ -95,6 +95,6 @@ class SourceController extends BaseController
         $this->authorize('isAdmin');
         $Source = $this->Source->findOrFail($id);
         $Source->delete();
-        return $this->sendResponse($Source, 'Source has been Deleted');
+        return $this->sendResponse($Source, 'Source a été supprimé');
     }
 }

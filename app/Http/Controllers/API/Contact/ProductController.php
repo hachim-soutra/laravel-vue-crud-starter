@@ -73,7 +73,7 @@ class ProductController extends BaseController
             'product_id' => $product->id,
         ]);
 
-        return $this->sendResponse($product, 'Product Created Successfully');
+        return $this->sendResponse($product, 'Product Créé avec succès');
     }
 
     /**
@@ -111,7 +111,7 @@ class ProductController extends BaseController
             'offre_json' => $offre_json,
         ]);
         $product->update($request->all());
-        return $this->sendResponse($product, 'Product Information has been updated');
+        return $this->sendResponse($product, 'Product Les informations ont été mises à jour');
     }
 
     /**
@@ -128,7 +128,7 @@ class ProductController extends BaseController
 
         $product->delete();
 
-        return $this->sendResponse($product, 'Product has been Deleted');
+        return $this->sendResponse($product, 'Product a été supprimé');
     }
 
     public function upload(Request $request)

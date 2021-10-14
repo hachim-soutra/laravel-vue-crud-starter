@@ -84,6 +84,8 @@ Route::middleware('auth:api', 'cors')->get('/user', function (Request $request) 
 
 Route::namespace('App\Http\Controllers\API\User')->middleware('cors')->prefix('auth')->name('auth.')->group(function () {
     Route::post('login', 'AuthController@login');
+    Route::post('forget-password', 'AuthController@forgetPassword')->name('forgetPassword');
+    Route::post('{token}/change-password', 'AuthController@changePassword');
 });
 
 Route::namespace('App\\Http\\Controllers\\API\V1')->middleware(['cors', 'auth:api','LastActivityUser'])->group(function () {

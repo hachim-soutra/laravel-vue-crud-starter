@@ -69,7 +69,7 @@ class GestionController extends BaseController
             'password'      => Hash::make($request['password']),
         ]);
 
-        return $this->sendResponse($Gestion, 'Gestion Created Successfully');
+        return $this->sendResponse($Gestion, 'Agent de gestion Créé avec succès');
 
     }
 
@@ -110,7 +110,7 @@ class GestionController extends BaseController
 
         $Gestion->update($request->all());
 
-        return $this->sendResponse($Gestion, 'Gestion Information has been updated');
+        return $this->sendResponse($Gestion, 'Les informations ont été mises à jour');
     }
 
     /**
@@ -127,7 +127,7 @@ class GestionController extends BaseController
 
         $Gestion->delete();
 
-        return $this->sendResponse($Gestion, 'Gestion has been Deleted');
+        return $this->sendResponse($Gestion, 'Agent de gestion a été supprimé');
 
     }
 }

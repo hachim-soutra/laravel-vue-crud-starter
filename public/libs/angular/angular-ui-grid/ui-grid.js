@@ -21567,7 +21567,7 @@ module.filter('px', function() {
            * @description Save the current scroll position.  Note that this
            * is saved as the percentage of the grid scrolled - so if your
            * user returns to a grid with a significantly different number of
-           * rows (perhaps some data has been deleted) then the scroll won't
+           * rows (perhaps some data a été supprimé) then the scroll won't
            * actually show the same rows as before.  If you want to scroll to
            * a specific row then you should instead use the saveFocus option, which
            * is the default.

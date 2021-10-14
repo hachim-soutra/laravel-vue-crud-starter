@@ -198,7 +198,7 @@ class OrderController extends BaseController
 
         //FacadesNotification::send($user, $order);
         Notification::send($user, new newOrder($order));
-        return $this->sendResponse($order, 'order Created Successfully');
+        return $this->sendResponse($order, 'order Créé avec succès');
     }
 
     /**
@@ -223,7 +223,7 @@ class OrderController extends BaseController
     public function update(Request $request, $id)
     {
         $order = $this->order->findOrFail($id);
-        return $this->sendResponse($order, 'order Information has been updated');
+        return $this->sendResponse($order, 'order Les informations ont été mises à jour');
     }
     public function relancerOrder(Request $request)
     {
@@ -257,7 +257,7 @@ class OrderController extends BaseController
             'order_id' => $order->id,
             'text' => 'partenaire ' . auth()->user()->username . ' mise a jour order livraison to' . $order->statusLivraison->name
         ]);
-        return $this->sendResponse($order, 'order Information has been updated');
+        return $this->sendResponse($order, 'order Les informations ont été mises à jour');
     }
 
     /**
@@ -271,6 +271,6 @@ class OrderController extends BaseController
         $this->authorize('isAdmin');
         $order = $this->order->findOrFail($id);
         $order->delete();
-        return $this->sendResponse($order, 'order has been Deleted');
+        return $this->sendResponse($order, 'order a été supprimé');
     }
 }

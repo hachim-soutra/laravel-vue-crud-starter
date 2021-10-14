@@ -59,7 +59,7 @@ class StockController extends BaseController
     {
         $Stock = $this->Stock->create($request->all());
 
-        return $this->sendResponse($Stock, 'Stock Created Successfully');
+        return $this->sendResponse($Stock, 'Stock créé avec succès');
 
     }
 
@@ -100,7 +100,7 @@ class StockController extends BaseController
 
         $Stock->update($request->all());
 
-        return $this->sendResponse($Stock, 'Stock Information has been updated');
+        return $this->sendResponse($Stock, 'Les informations ont été mises à jour');
     }
 
     /**
@@ -117,7 +117,7 @@ class StockController extends BaseController
 
         $Stock->delete();
 
-        return $this->sendResponse($Stock, 'Stock has been Deleted');
+        return $this->sendResponse($Stock, 'Stock a été supprimé');
 
     }
 }

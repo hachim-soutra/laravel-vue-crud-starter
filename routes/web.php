@@ -11,16 +11,16 @@
 |
 */
 
+use App\Mail\Consumer\NouveauMotDePasse;
+use App\Mail\NouveauMotDePasse as MailNouveauMotDePasse;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    QrCode::size(500)
-        ->format('png')
-        ->generate('codingdriver.com', public_path('images/qrcode.png'));
     // return view('welcome');
     return redirect('/dashboard');
 });

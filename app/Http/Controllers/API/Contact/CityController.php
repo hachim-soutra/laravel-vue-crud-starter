@@ -53,7 +53,7 @@ class CityController extends BaseController
         $user = City::create([
             'name' => $request['name'],
         ]);
-        return $this->sendResponse($user, 'City Created Successfully');
+        return $this->sendResponse($user, 'City Créé avec succès');
     }
 
     /**
@@ -83,7 +83,7 @@ class CityController extends BaseController
         ]);
         $country = City::findOrFail($id);
         $country->update($request->all());
-        return $this->sendResponse($country, 'country Information has been updated');
+        return $this->sendResponse($country, 'country Les informations ont été mises à jour');
     }
 
     /**

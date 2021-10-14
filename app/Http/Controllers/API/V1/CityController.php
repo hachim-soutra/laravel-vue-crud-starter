@@ -27,7 +27,7 @@ class CityController extends BaseController
 
         $countries = new CityCollection(City::latest()->get());
 
-        return $this->sendResponse($countries, 'Countries list');
+        return $this->sendResponse($countries, 'Liste des pays');
     }
 
     /**
@@ -41,7 +41,7 @@ class CityController extends BaseController
     }
 
     /**
-     * Store a newly created resource in storage.
+ * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -54,7 +54,7 @@ class CityController extends BaseController
         $user = City::create([
             'name' => $request['name'],
         ]);
-        return $this->sendResponse($user, 'City Created Successfully');
+        return $this->sendResponse($user, 'Ville crée avec succès');
     }
 
     /**
@@ -84,7 +84,7 @@ class CityController extends BaseController
         ]);
         $country = City::findOrFail($id);
         $country->update($request->all());
-        return $this->sendResponse($country, 'country Information has been updated');
+        return $this->sendResponse($country, 'Les informations ont été mises à jour');
     }
 
     /**

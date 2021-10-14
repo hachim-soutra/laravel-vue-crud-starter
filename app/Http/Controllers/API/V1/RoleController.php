@@ -52,7 +52,7 @@ class RoleController extends BaseController
 
         return redirect()->route('roles.index')
 
-                        ->with('success','Role created successfully');
+                        ->with('success','Role Créé avec succès');
 
     }
     public function show($id)

@@ -73,7 +73,7 @@ class ContactController extends BaseController
             'phone'         => $request->get('phone'),
         ]);
 
-        return $this->sendResponse($Contact, 'Contact Created Successfully');
+        return $this->sendResponse($Contact, 'Partenaire Créé avec succès');
     }
 
     /**
@@ -121,7 +121,7 @@ class ContactController extends BaseController
 
         $Contact->update($request->all());
 
-        return $this->sendResponse($Contact, 'Contact Information has been updated');
+        return $this->sendResponse($Contact, 'Les informations ont été mises à jour');
     }
 
     /**
@@ -136,6 +136,6 @@ class ContactController extends BaseController
 
         $Contact->delete();
 
-        return $this->sendResponse($Contact, 'Contact has been Deleted');
+        return $this->sendResponse($Contact, 'Partenaire a été supprimé');
     }
 }

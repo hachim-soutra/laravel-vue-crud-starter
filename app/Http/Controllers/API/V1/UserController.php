@@ -66,7 +66,7 @@ class UserController extends BaseController
         $user->assignRole(Role::find($request->input('role')));
         $user->givePermissionTo($request['permissions']);
         UserRegistred::dispatch(auth()->user());
-        return $this->sendResponse($user, 'User Created Successfully');
+        return $this->sendResponse($user, 'User Créé avec succès');
     }
     public function show($id)
     {
@@ -99,7 +99,7 @@ class UserController extends BaseController
                 $user->givePermissionTo($value['name']);
             };
         }
-        return $this->sendResponse($user, 'User Information has been updated');
+        return $this->sendResponse($user, 'User Les informations ont été mises à jour');
     }
 
     /**
@@ -115,7 +115,7 @@ class UserController extends BaseController
 
         $user->delete();
 
-        return $this->sendResponse([$user], 'User has been Deleted');
+        return $this->sendResponse([$user], 'Agent a été supprimé');
     }
 
     public function verify()

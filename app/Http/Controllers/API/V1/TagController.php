@@ -61,7 +61,7 @@ class TagController extends BaseController
             'name' => $request->get('name')
         ]);
 
-        return $this->sendResponse($tag, 'Tag Created Successfully');
+        return $this->sendResponse($tag, 'Tag Créé avec succès');
     }
 
     /**
@@ -78,6 +78,6 @@ class TagController extends BaseController
 
         $tag->update($request->all());
 
-        return $this->sendResponse($tag, 'Tag Information has been updated');
+        return $this->sendResponse($tag, 'Tag Les informations ont été mises à jour');
     }
 }

@@ -137,7 +137,7 @@ class OrderController extends BaseController
             'order_id' => $order->id,
             'text' => 'Agent Confirmation ' . auth()->user()->username . ' ajouter order'
         ]);
-        return $this->sendResponse($order, 'order Information has been updated');
+        return $this->sendResponse($order, 'order Les informations ont été mises à jour');
     }
     public function update(Request $request, $id)
     {
@@ -168,7 +168,7 @@ class OrderController extends BaseController
             'order_id' => $order->id,
             'text' => 'Agent Confirmation ' . auth()->user()->username . ' mise a jour order avec ' . $order->status->name
         ]);
-        return $this->sendResponse($order, 'order Information has been updated');
+        return $this->sendResponse($order, 'order Les informations ont été mises à jour');
     }
     public function updateStatus(Request $request, $id)
     {
@@ -185,7 +185,7 @@ class OrderController extends BaseController
             'order_id' => $order->id,
             'text' => 'Agent Confirmation ' . auth()->user()->username . ' mise a jour order avec ' . $order->status->name
         ]);
-        return $this->sendResponse($order, 'order Information has been updated');
+        return $this->sendResponse($order, 'order Les informations ont été mises à jour');
     }
 
     /**
@@ -199,6 +199,6 @@ class OrderController extends BaseController
         $this->authorize('isAdmin');
         $order = $this->order->findOrFail($id);
         $order->delete();
-        return $this->sendResponse($order, 'order has been Deleted');
+        return $this->sendResponse($order, 'order a été supprimé');
     }
 }

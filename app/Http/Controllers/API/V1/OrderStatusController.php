@@ -44,7 +44,7 @@ class OrderStatusController extends BaseController
         $user = OrderStatus::create([
             'name' => $request['name'],
         ]);
-        return $this->sendResponse($user, 'Status Created Successfully');
+        return $this->sendResponse($user, 'Status Créé avec succès');
     }
 
     /**
@@ -78,7 +78,7 @@ class OrderStatusController extends BaseController
         $status->update($request->all());
 
 
-        return $this->sendResponse($status, 'Status Information has been updated');
+        return $this->sendResponse($status, 'Les informations ont été mises à jour');
     }
 
 }

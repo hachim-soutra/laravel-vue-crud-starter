@@ -53,7 +53,7 @@ class TransactionController extends BaseController
         $user = Transaction::create([
             'name' => $request['name'],
         ]);
-        return $this->sendResponse($user, 'Transaction Created Successfully');
+        return $this->sendResponse($user, 'Transaction Créé avec succès');
     }
 
     /**
@@ -78,13 +78,13 @@ class TransactionController extends BaseController
      */
     public function update(Request $request, $id)
     {
-        // $request->validate([
-        //     'name' => 'required|unique:cities,name,' . $id
-        // ]);
         $country = Transaction::findOrFail($id);
-        $country->update($request->all());
-        return $this->sendResponse($country, 'country Information has been updated');
+        $country->update([
+            'date_recipient' => now()
+        ]);
+        return $this->sendResponse($country, 'country Les informations ont été mises à jour');
     }
+
 
     /**
      * Remove the specified resource from storage.

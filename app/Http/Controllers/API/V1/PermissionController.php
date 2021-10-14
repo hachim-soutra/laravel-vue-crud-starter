@@ -49,7 +49,7 @@ class PermissionController extends BaseController
             'name' => $request['name'],
             'role_id' => $request['role_id'],
         ]);
-        return $this->sendResponse($Permission, 'Permission Created Successfully');
+        return $this->sendResponse($Permission, 'Permission Créé avec succès');
 
     }
 
@@ -73,7 +73,7 @@ class PermissionController extends BaseController
 
         $user->update($request->all());
 
-        return $this->sendResponse($user, 'Permission Information has been updated');
+        return $this->sendResponse($user, 'Les informations ont été mises à jour');
     }
 
     /**
@@ -89,6 +89,6 @@ class PermissionController extends BaseController
 
         $user->delete();
 
-        return $this->sendResponse([$user], 'Permission has been Deleted');
+        return $this->sendResponse([$user], 'Permission a été supprimé');
     }
 }

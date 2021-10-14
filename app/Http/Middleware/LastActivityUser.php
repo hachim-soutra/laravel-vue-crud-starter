@@ -33,6 +33,7 @@ class LastActivityUser
     */
    public function handle($request, Closure $next)
    {
+        app()->setLocale('fr');
         if ($this->auth->check() && $this->auth->user()->last_activity < now()->subMinutes(5)->format('Y-m-d H:i:s')) {
             $user = $this->auth->user();
             $user->last_activity = now();

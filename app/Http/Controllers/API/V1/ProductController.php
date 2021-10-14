@@ -81,7 +81,7 @@ class ProductController extends BaseController
             'quantity' => $request->get('quantity'),
             'contact_id' => $request->get('contact_id'),
         ]);
-        return $this->sendResponse($product, 'Product Created Successfully');
+        return $this->sendResponse($product, 'Produit créé avec succès');
     }
 
     /**
@@ -119,7 +119,7 @@ class ProductController extends BaseController
         //     'offre_json' => $offre_json,
         // ]);
         $product->update($request->all());
-        return $this->sendResponse($product, 'Product Information has been updated');
+        return $this->sendResponse($product, 'Les informations ont été mises à jour');
     }
 
     /**
@@ -134,7 +134,7 @@ class ProductController extends BaseController
 
         $product->delete();
 
-        return $this->sendResponse($product, 'Product has been Deleted');
+        return $this->sendResponse($product, 'Produit a été supprimé');
     }
 
     public function upload(Request $request)

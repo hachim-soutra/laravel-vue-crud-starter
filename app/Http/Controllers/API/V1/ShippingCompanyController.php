@@ -62,7 +62,7 @@ class ShippingCompanyController extends BaseController
             'city'      => $request->city,
             'status'      => $request->status,
         ]);
-        return $this->sendResponse($shipping, 'shipping Created Successfully');
+        return $this->sendResponse($shipping, 'Livreur créé avec succès');
     }
 
     /**
@@ -88,7 +88,7 @@ class ShippingCompanyController extends BaseController
     {
         $shipping = $this->shipping->findOrFail($id);
         $shipping->update($request->all());
-        return $this->sendResponse($shipping, 'shipping Information has been updated');
+        return $this->sendResponse($shipping, 'Les informations ont été mises à jour');
     }
 
     /**
@@ -105,7 +105,7 @@ class ShippingCompanyController extends BaseController
 
         $shipping->delete();
 
-        return $this->sendResponse($shipping, 'shipping has been Deleted');
+        return $this->sendResponse($shipping, 'livreur a été supprimé');
     }
 
     public function upload(Request $request)

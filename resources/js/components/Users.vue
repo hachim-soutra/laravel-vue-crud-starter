@@ -217,7 +217,7 @@
                                 this.form.delete('api/user/'+id).then(()=>{
                                         Swal.fire(
                                         'Deleted!',
-                                        'Your file has been deleted.',
+                                        'Your file a été supprimé.',
                                         'success'
                                         );
                                     // Fire.$emit('AfterCreate');

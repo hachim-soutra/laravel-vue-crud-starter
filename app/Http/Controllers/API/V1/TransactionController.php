@@ -59,7 +59,7 @@ class TransactionController extends BaseController
         $country->update([
             'date_payment' => now()
         ]);
-        return $this->sendResponse($country, 'country Information has been updated');
+        return $this->sendResponse($country, 'Les informations ont été mises à jour');
     }
 
     /**

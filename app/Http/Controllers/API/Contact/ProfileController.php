@@ -40,58 +40,58 @@ class ProfileController extends Controller
     {
         $start = request('start');
         $end = request('end');
-        $total                      = Order::where('contact_id',auth()->user()->id)->count();
-        $data["total_orders"]       = Order::where('contact_id',auth()->user()->id)->sum('total');
+        $total                      = Order::where('contact_id', auth()->user()->id)->count();
+        $data["total_orders"]       = Order::where('contact_id', auth()->user()->id)->sum('total');
         $data["sales"]              = $total;
         $data["agent"]              = User::count();
-        $data["livreur"]            = Transaction::where('contact_id',auth()->user()->id)->count();
-        $data["product"]            = Product::where('contact_id',auth()->user()->id)->count();
+        $data["livreur"]            = Transaction::where('contact_id', auth()->user()->id)->count();
+        $data["product"]            = Product::where('contact_id', auth()->user()->id)->count();
 
-        $data["confirmed_orders"]   = Order::where("order_status_id", 3)->where('contact_id',auth()->user()->id)->count();
+        $data["confirmed_orders"]   = Order::where("order_status_id", 3)->where('contact_id', auth()->user()->id)->count();
 
-        $data["in_progress_orders"]                 = Order::where("status_livraison_id", 1)->where('contact_id',auth()->user()->id)->count();
-        $data["delivred_orders"]                    = Order::where("status_livraison_id", 2)->where('contact_id',auth()->user()->id)->count();
+        $data["in_progress_orders"]                 = Order::where("status_livraison_id", 1)->where('contact_id', auth()->user()->id)->count();
+        $data["delivred_orders"]                    = Order::where("status_livraison_id", 2)->where('contact_id', auth()->user()->id)->count();
 
-        $data["payed_orders_amount"]                = Order::whereBetween('created_at', [$start, $end])->where("status_livraison_id", 6)->where('contact_id',auth()->user()->id)->sum('total');
+        $data["payed_orders_amount"]                = Order::whereBetween('created_at', [$start, $end])->where("status_livraison_id", 6)->where('contact_id', auth()->user()->id)->sum('total');
 
         // orders earning
-        $data["payed_order"]                        = Order::where("status_livraison_id", 6)->where('contact_id',auth()->user()->id)->count();
-        $data["payed_order_progress"]               = Order::where("status_livraison_id", 6)->where('contact_id',auth()->user()->id)->count()*100/ $total;
+        $data["payed_order"]                        = Order::where("status_livraison_id", 6)->where('contact_id', auth()->user()->id)->count();
+        $data["payed_order_progress"]               = Order::where("status_livraison_id", 6)->where('contact_id', auth()->user()->id)->count() * 100 / $total;
 
-        $data["livred_order"]                       = Order::where("status_livraison_id", 2)->where('contact_id',auth()->user()->id)->count();
-        $data["livred_order_progress"]              = Order::where("status_livraison_id", 2)->where('contact_id',auth()->user()->id)->count()*100/ $total;
+        $data["livred_order"]                       = Order::where("status_livraison_id", 2)->where('contact_id', auth()->user()->id)->count();
+        $data["livred_order_progress"]              = Order::where("status_livraison_id", 2)->where('contact_id', auth()->user()->id)->count() * 100 / $total;
 
-        $data["expedie_order"]                      = Order::where("status_livraison_id", 1)->where('contact_id',auth()->user()->id)->count();
-        $data["expedie_order_progress"]             = Order::where("status_livraison_id", 1)->where('contact_id',auth()->user()->id)->count()*100/ $total;
+        $data["expedie_order"]                      = Order::where("status_livraison_id", 1)->where('contact_id', auth()->user()->id)->count();
+        $data["expedie_order_progress"]             = Order::where("status_livraison_id", 1)->where('contact_id', auth()->user()->id)->count() * 100 / $total;
 
-        $data["reporter_order"]                     = Order::where("status_livraison_id", 3)->where('contact_id',auth()->user()->id)->count();
-        $data["reporter_order_progress"]            = Order::where("status_livraison_id", 3)->where('contact_id',auth()->user()->id)->count()*100/ $total;
+        $data["reporter_order"]                     = Order::where("status_livraison_id", 3)->where('contact_id', auth()->user()->id)->count();
+        $data["reporter_order_progress"]            = Order::where("status_livraison_id", 3)->where('contact_id', auth()->user()->id)->count() * 100 / $total;
 
-        $data["annuler_order"]                      = Order::where("status_livraison_id", 7)->where('contact_id',auth()->user()->id)->count();
-        $data["annuler_order_progress"]             = Order::where("status_livraison_id", 7)->where('contact_id',auth()->user()->id)->count()*100/ $total;
+        $data["annuler_order"]                      = Order::where("status_livraison_id", 7)->where('contact_id', auth()->user()->id)->count();
+        $data["annuler_order_progress"]             = Order::where("status_livraison_id", 7)->where('contact_id', auth()->user()->id)->count() * 100 / $total;
 
-        $data["other_order"]                        = Order::whereNotIN("status_livraison_id", [6, 2, 1, 3, 7])->where('contact_id',auth()->user()->id)->count();
-        $data["other_order_progress"]               = Order::whereNotIN("status_livraison_id", [6, 2, 1, 3, 7])->where('contact_id',auth()->user()->id)->count()*100/ $total;
+        $data["other_order"]                        = Order::whereNotIN("status_livraison_id", [6, 2, 1, 3, 7])->where('contact_id', auth()->user()->id)->count();
+        $data["other_order_progress"]               = Order::whereNotIN("status_livraison_id", [6, 2, 1, 3, 7])->where('contact_id', auth()->user()->id)->count() * 100 / $total;
 
         // orders status
 
-        $data["expedie_order_status"]               =  (Order::where("order_status_id", 1)->where('contact_id',auth()->user()->id)->count());
-        $data["expedie_order_status_progress"]      =  (Order::where("order_status_id", 1)->where('contact_id',auth()->user()->id)->count()*100/ $total);
+        $data["expedie_order_status"]               =  (Order::where("order_status_id", 1)->where('contact_id', auth()->user()->id)->count());
+        $data["expedie_order_status_progress"]      =  (Order::where("order_status_id", 1)->where('contact_id', auth()->user()->id)->count() * 100 / $total);
 
-        $data["confirme_order_status"]              =  (Order::where("order_status_id", 3)->where('contact_id',auth()->user()->id)->count());
-        $data["confirme_order_status_progress"]     =  (Order::where("order_status_id", 3)->where('contact_id',auth()->user()->id)->count()*100/ $total);
+        $data["confirme_order_status"]              =  (Order::where("order_status_id", 3)->where('contact_id', auth()->user()->id)->count());
+        $data["confirme_order_status_progress"]     =  (Order::where("order_status_id", 3)->where('contact_id', auth()->user()->id)->count() * 100 / $total);
 
-        $data["reporter_order_status"]              =  (Order::where("order_status_id", 9)->where('contact_id',auth()->user()->id)->count());
-        $data["reporter_order_status_progress"]     =  (Order::where("order_status_id", 9)->where('contact_id',auth()->user()->id)->count()*100/ $total);
+        $data["reporter_order_status"]              =  (Order::where("order_status_id", 9)->where('contact_id', auth()->user()->id)->count());
+        $data["reporter_order_status_progress"]     =  (Order::where("order_status_id", 9)->where('contact_id', auth()->user()->id)->count() * 100 / $total);
 
-        $data["waitting_order_status"]              =  (Order::where("order_status_id", 4)->where('contact_id',auth()->user()->id)->count());
-        $data["waitting_order_status_progress"]     =  (Order::where("order_status_id", 4)->where('contact_id',auth()->user()->id)->count()*100/ $total);
+        $data["waitting_order_status"]              =  (Order::where("order_status_id", 4)->where('contact_id', auth()->user()->id)->count());
+        $data["waitting_order_status_progress"]     =  (Order::where("order_status_id", 4)->where('contact_id', auth()->user()->id)->count() * 100 / $total);
 
-        $data["annuler_order_status"]               =  (Order::where("order_status_id", 7)->where('contact_id',auth()->user()->id)->count());
-        $data["annuler_order_status_progress"]      =  (Order::where("order_status_id", 7)->where('contact_id',auth()->user()->id)->count()*100/ $total);
+        $data["annuler_order_status"]               =  (Order::where("order_status_id", 7)->where('contact_id', auth()->user()->id)->count());
+        $data["annuler_order_status_progress"]      =  (Order::where("order_status_id", 7)->where('contact_id', auth()->user()->id)->count() * 100 / $total);
 
-        $data["other_order_status"]                 =  (Order::whereNotIN("order_status_id", [6, 2, 1, 3, 7])->where('contact_id',auth()->user()->id)->count()) ;
-        $data["other_order_status_progress"]        =  (Order::whereNotIN("order_status_id", [6, 2, 1, 3, 7])->where('contact_id',auth()->user()->id)->count()*100/ $total);
+        $data["other_order_status"]                 =  (Order::whereNotIN("order_status_id", [6, 2, 1, 3, 7])->where('contact_id', auth()->user()->id)->count());
+        $data["other_order_status_progress"]        =  (Order::whereNotIN("order_status_id", [6, 2, 1, 3, 7])->where('contact_id', auth()->user()->id)->count() * 100 / $total);
 
 
         $response = [

@@ -186,7 +186,7 @@ class OrderController extends BaseController
 
         //FacadesNotification::send($user, $order);
         Notification::send($user, new newOrder($order));
-        return $this->sendResponse($order, 'order Created Successfully');
+        return $this->sendResponse($order, 'order Créé avec succès');
     }
 
     /**
@@ -285,6 +285,6 @@ class OrderController extends BaseController
             'order_id' => $order->id,
             'text' => 'Agent ' . auth()->user()->username . ' supprimer order'
         ]);
-        return $this->sendResponse($order, 'order has been Deleted');
+        return $this->sendResponse($order, 'order a été supprimé');
     }
 }

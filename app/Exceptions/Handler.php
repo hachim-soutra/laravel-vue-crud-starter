@@ -45,7 +45,6 @@ class Handler extends ExceptionHandler
 				'message' => 'Les données fournies étaient invalides',
 				'errors' => $e->validator->getMessageBag()], 422);
         }
-
-        return parent::render($request, $exception);
+        return parent::render($request, $e);
     }
 }

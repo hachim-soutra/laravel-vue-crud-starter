@@ -94,10 +94,8 @@ class UserController extends BaseController
         $user->roles()->detach();
         $user->assignRole(Role::find($request->input('role_id')));
         $user->permissions()->detach();
-        if($request['permissions']) {
-            foreach ($request['permissions'] as  $value) {
-                $user->givePermissionTo($value['name']);
-            };
+        if($request['permissions']){
+            $user->givePermissionTo($request['permissions']);
         }
         return $this->sendResponse($user, 'User Les informations ont été mises à jour');
     }

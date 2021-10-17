@@ -84,14 +84,14 @@ class ProfileController extends Controller
         $data["reporter_order_status"]              =  (Order::where("order_status_id", 9)->where('contact_id', auth()->user()->id)->count());
         $data["reporter_order_status_progress"]     =  (Order::where("order_status_id", 9)->where('contact_id', auth()->user()->id)->count() * 100 / $total);
 
-        $data["waitting_order_status"]              =  (Order::where("order_status_id", 4)->where('contact_id', auth()->user()->id)->count());
-        $data["waitting_order_status_progress"]     =  (Order::where("order_status_id", 4)->where('contact_id', auth()->user()->id)->count() * 100 / $total);
+        $data["waitting_order_status"]              =  (Order::where("order_status_id", 8)->where('contact_id', auth()->user()->id)->count());
+        $data["waitting_order_status_progress"]     =  (Order::where("order_status_id", 8)->where('contact_id', auth()->user()->id)->count() * 100 / $total);
 
         $data["annuler_order_status"]               =  (Order::where("order_status_id", 7)->where('contact_id', auth()->user()->id)->count());
         $data["annuler_order_status_progress"]      =  (Order::where("order_status_id", 7)->where('contact_id', auth()->user()->id)->count() * 100 / $total);
 
-        $data["other_order_status"]                 =  (Order::whereNotIN("order_status_id", [6, 2, 1, 3, 7])->where('contact_id', auth()->user()->id)->count());
-        $data["other_order_status_progress"]        =  (Order::whereNotIN("order_status_id", [6, 2, 1, 3, 7])->where('contact_id', auth()->user()->id)->count() * 100 / $total);
+        $data["other_order_status"]                 =  (Order::whereNotIN("order_status_id", [8, 9, 1, 3, 7])->where('contact_id', auth()->user()->id)->count());
+        $data["other_order_status_progress"]        =  (Order::whereNotIN("order_status_id", [8, 9, 1, 3, 7])->where('contact_id', auth()->user()->id)->count() * 100 / $total);
 
 
         $response = [

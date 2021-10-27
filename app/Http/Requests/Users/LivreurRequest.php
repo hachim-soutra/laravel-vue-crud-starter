@@ -60,7 +60,6 @@ class LivreurRequest extends FormRequest
             'city' => 'required|string|max:191',
             'city_id' => 'required|exists:cities,id',
             'phone' => 'required|string|max:191',
-            'price' => 'required|numeric|gt:0',
             'email' => 'sometimes|string|email|max:191|unique:shippings,email,' . $this->get('id')
         ];
     }

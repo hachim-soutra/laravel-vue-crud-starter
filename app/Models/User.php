@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Pipeline\Pipeline;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -99,5 +100,17 @@ class User extends Authenticatable // implements MustVerifyEmail
     public function admin()
     {
         return $this->belongsTo(User::class,'id');
+    }
+
+    public function rammasage()
+    {
+        if (auth()->user()->roles->first() && auth()->user()->roles->first()->id == 1){
+            return Order::where('order_status_id', 3)
+                ->whereNull('shipping_id')
+                ->count();
+        }else {
+            return Order::whereIn('city_id',auth()->user()->city_id)->where('order_status_id', 3)->whereNull('shipping_id')
+                ->count();
+        }
     }
 }

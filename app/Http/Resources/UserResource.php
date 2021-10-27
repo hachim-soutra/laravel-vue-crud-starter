@@ -21,8 +21,8 @@ class UserResource extends JsonResource
             'name'              => $this->name,
             'email'             => $this->email,
             'country'           => $this->country ? $this->country->name : '',
-            'role_id'           => $this->roles->first()->id,
-            'role_name'           => $this->roles->first()->name,
+            'role_id'           => $this->roles->first() ? $this->roles->first()->id : 1,
+            'role_name'         =>  $this->roles->first() ? $this->roles->first()->name : '',
             'role'              => $this->getRoleNames(),
             'permissions'       => $this->getDirectPermissions(),
             'admin'             => $this->admin ? $this->admin->name : '',
@@ -32,6 +32,7 @@ class UserResource extends JsonResource
             'city_id'             => $this->city_id,
             'city'             => $this->country,
             'orders'            => 0,
+            'rammasage'            => $this->rammasage(),
             'notificactions'    => $this->unreadNotifications,
             // 'created_at'        => $this->created_at ? $this->created_at->format('Y-m-d') : "",
         ];

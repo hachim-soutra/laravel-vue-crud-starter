@@ -57,7 +57,7 @@ class ShippingController extends BaseController
             'name'      => $request->name,
             'email'     => $request->email,
             'password'  => Hash::make($request->password),
-            'price'     => $request->price,
+            'price'     => 0,
             'phone'     => $request->phone,
             'city'      => $request->city,
             'city_id'   => $request->city_id,

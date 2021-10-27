@@ -56,7 +56,7 @@ class ShippingCompanyController extends BaseController
             'name'      => $request->name,
             'email'     => $request->email,
             'password'  => encrypt($request->password),
-            'price'     => $request->price,
+            'price'     => 0,
             'type'      => $request->type,
             'phone'     => $request->phone,
             'city'      => $request->city,
